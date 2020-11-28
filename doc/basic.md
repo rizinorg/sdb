@@ -14,7 +14,7 @@ Using arrays (>=0.6):
 	foo
 	2
 	foo
-	fuck
+	bar
 	2
 
 Let's play with json:

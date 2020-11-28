@@ -10,7 +10,7 @@ int main (int argc, char **argv) {
 	if (c>0) {
 		Sdb *n = sdb_ns (s, "bar", 1);
 		if (c>1) {
-			sdb_set (n, "user.pancake", "pancake foo", 0);
+			sdb_set (n, "user.username", "some user", 0);
 		}
 		if (c>2) {
 			sdb_set (n, "user.password", "jklsdf8r3o", 0);
@@ -18,9 +18,9 @@ int main (int argc, char **argv) {
 		if (c>3)
 			sdb_ns_set (s, "food", n);
 		if (c>4)
-			sdb_ns_set (sdb_ns (s, "food", 1), "penis", n);
+			sdb_ns_set (sdb_ns (s, "food", 1), "foobo", n);
 		if (c>5)
-			sdb_ns_set (sdb_ns (s, "flood", 1), "penis", n);
+			sdb_ns_set (sdb_ns (s, "flood", 1), "foobo", n);
 	}
 	sdb_free (s);
 	return 0;

@@ -9,7 +9,7 @@
 (print "LEN> " (sdb:alength db "list") "\n")
 (print "---> " str "\n")
 (print "-0-> " (sdb:aget db "list" 0) "\n")
-(sdb:aset db "list" 0 "FUCK")
+(sdb:aset db "list" 0 "aaaa")
 (print "-0-> " (sdb:aget db "list" 0) "\n")
 (sdb:sync db)
 (sdb:free db)
