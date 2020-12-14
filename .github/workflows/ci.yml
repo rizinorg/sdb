@@ -1,0 +1,39 @@
+name: SDB
+
+on:
+    push:
+        branches: [$default-branch]
+    pull_request:
+        branches: [$default-branch]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Running mmap build
+              run: |
+                  make clean
+                  make
+
+            - name: Run mmap tests
+              env:
+                  VERBOSE: 1
+              run: make test
+
+            - name: Running non-mmap build
+              run: |
+                  make clean && git clean -xdf
+                  make
+              env:
+                  CFLAGS: -DUSE_MMAN=-0
+
+            - name: Run non-mmap tests
+              env:
+                  VERBOSE: 1
+              run: make test
+
+            - name: Test install/uninstall
+              run: |
+                  sudo make install
+                  sudo make uninstall
