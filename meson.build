@@ -71,7 +71,7 @@ if get_option('local') and get_option('default_library') == 'shared'
   rpath_exe = '$ORIGIN/../' + get_option('libdir')
 endif
 
-libsdb = both_libraries('sdb', libsdb_sources,
+libsdb = library('sdb', libsdb_sources,
   include_directories: sdb_inc,
   implicit_include_directories: false,
   soversion: sdb_libversion,
@@ -80,7 +80,7 @@ libsdb = both_libraries('sdb', libsdb_sources,
 )
 
 sdb_dep = declare_dependency(
-  link_with: libsdb.get_static_lib(),
+  link_with: libsdb,
   include_directories: sdb_inc
 )
 
@@ -104,15 +104,9 @@ if not meson.is_subproject()
   install_headers(include_files, subdir: 'sdb')
 endif
 
-if host_machine.system() == 'windows'
-  link_with = libsdb.get_static_lib()
-else
-  link_with = libsdb.get_shared_lib()
-endif
-
 sdb_exe = executable('sdb', 'src/main.c',
   include_directories: sdb_inc,
-  link_with: [link_with],
+  link_with: libsdb,
   install: not meson.is_subproject(),
   install_rpath: rpath_exe,
   implicit_include_directories: false
@@ -136,7 +130,7 @@ endif
 pkgconfig_mod.generate(
   name: 'sdb',
   filebase: 'sdb',
-  libraries: [libsdb.get_shared_lib()],
+  libraries: libsdb,
   description: 'Simple DataBase',
   subdirs: ['sdb'],
   version: sdb_version,
@@ -144,16 +138,5 @@ pkgconfig_mod.generate(
 )
 
 if not meson.is_subproject()
-  make_exe = find_program('make', required: false)
-  if make_exe.found()
-    test('run tests', make_exe,
-      args: 'test',
-      env: ['BASEDIR=' + meson.current_build_dir()],
-      workdir: join_paths(meson.current_build_dir(), '..'),
-      depends: [sdb_exe, libsdb]
-    )
-  endif
-
-  subdir('test/bench')
-  subdir('test/unit')
+  subdir('test')
 endif
