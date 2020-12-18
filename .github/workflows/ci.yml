@@ -8,32 +8,27 @@ on:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         steps:
+            - name: Install dependencies
+              run: |
+                  sudo apt --assume-yes update
+                  sudo apt install ninja-build
+
+            - name: Install Meson
+              run: pip3 install -U meson
+
             - uses: actions/checkout@v2
             - name: Running mmap build
               run: |
-                  make clean
-                  make
-
-            - name: Run mmap tests
-              env:
-                  VERBOSE: 1
-              run: make test
+                  meson build
+                  ninja -C build
 
             - name: Running non-mmap build
-              run: |
-                  make clean && git clean -xdf
-                  make
               env:
                   CFLAGS: -DUSE_MMAN=-0
-
-            - name: Run non-mmap tests
-              env:
                   VERBOSE: 1
-              run: make test
-
-            - name: Test install/uninstall
               run: |
-                  sudo make install
-                  sudo make uninstall
+                  rm -rf build
+                  meson build
+                  ninja -C build
