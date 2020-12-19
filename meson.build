@@ -41,7 +41,7 @@ configure_file(
   install_dir : join_paths(get_option('includedir'), 'sdb')
 )
 
-if get_option('static_runtime').enabled()
+if get_option('static_runtime')
   if cc.has_argument('/MT')
     # Use -Db_vscrt=static_from_buildtype to avoid warnings due to multiple /M options
     add_project_arguments('/MT', language: 'c')
