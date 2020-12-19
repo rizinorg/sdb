@@ -41,9 +41,13 @@ configure_file(
   install_dir : join_paths(get_option('includedir'), 'sdb')
 )
 
-if get_option('static_runtime')
+if get_option('static_runtime').enabled()
   if cc.has_link_argument('-static')
     add_project_link_arguments('-static', language: 'c')
+  endif
+elif get_option('static_runtime').disabled()
+  if cc.has_argument('/MD')
+    add_project_arguments('/MD', language: 'c')
   endif
 endif
 
