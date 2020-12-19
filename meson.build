@@ -1,7 +1,6 @@
 project('sdb', 'c', meson_version: '>=0.49.0', default_options: [
-  'b_vscrt=from_buildtype',
-  'b_pie=true',
-  'b_staticpic=true'])
+  'b_vscrt=from_buildtype'
+])
 py3_exe = import('python').find_installation('python3')
 pkgconfig_mod = import('pkgconfig')
 cc = meson.get_compiler('c')
