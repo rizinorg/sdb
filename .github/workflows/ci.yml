@@ -42,3 +42,11 @@ jobs:
                   
             - name: Testing non-mmap build
               run: ninja -C build-nommap test
+
+            - name: Running static build
+              run: |
+                  meson --default-library=static -Dstatic_runtime=true build-static
+                  ninja -C build-static
+
+            - name: Testing static build
+              run: ninja -C build-static test

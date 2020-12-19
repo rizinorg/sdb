@@ -1,6 +1,10 @@
-project('sdb', 'c', meson_version: '>=0.47.0')
+project('sdb', 'c', meson_version: '>=0.49.0', default_options: [
+  'b_vscrt=static_from_buildtype',
+  'b_pie=true',
+  'b_staticpic=true'])
 py3_exe = import('python').find_installation('python3')
 pkgconfig_mod = import('pkgconfig')
+cc = meson.get_compiler('c')
 
 version_cmd = '''from sys import argv
 with open(argv[1]) as fd:
@@ -36,6 +40,25 @@ configure_file(
   configuration : conf_data,
   install_dir : join_paths(get_option('includedir'), 'sdb')
 )
+
+if get_option('static_runtime')
+  if cc.has_link_argument('-static')
+    add_project_link_arguments('-static', language: 'c')
+  endif
+endif
+
+if cc.get_id() == 'clang-cl'
+  add_project_arguments('-D__STDC__=1', language: 'c')
+  add_project_arguments('-D_CRT_DECLARE_NONSTDC_NAMES ', language: 'c')
+  add_project_arguments('-D_CRT_SECURE_NO_WARNINGS', language: 'c')
+  add_project_arguments('-D_CRT_NONSTDC_NO_DEPRECATE', language: 'c')
+endif
+
+if get_option('default_library') == 'shared'
+  if cc.has_argument('-fvisibility=hidden')
+    add_project_arguments('-fvisibility=hidden', language: 'c')
+  endif
+endif
 
 subdir('src')
 
