@@ -153,14 +153,14 @@ b=d
 EOF
 	cat > .b.sdb.txt <<EOF
 ulu=mulu
-radare2=cool
+rizin=cool
 EOF
 	$SDB .a == .a.sdb.txt .b.sdb.txt
 	rm -f .a.sdb.txt .b.sdb.txt
 	A="`$SDB .a`"
 	EXPECT=$(cat <<EOF
 a=c
-radare2=cool
+rizin=cool
 b=d
 ulu=mulu
 EOF
