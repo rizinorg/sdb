@@ -1,7 +1,7 @@
 #include <sdb.h>
 #if defined _WIN32
 #include <synchapi.h>
-#define sleep Sleep
+#define sleep(x) Sleep(x*1000)
 #else
 #include <assert.h>
 #endif
@@ -12,11 +12,11 @@ int main() {
 	sdb_expire_set (s, "key", 3, 0);
 	sleep (1);
 	if (sdb_const_get (s, "key", 0) == NULL) {
-		exit(1);
+		return 1;
 	}
-	sleep (3);
-	if (sdb_const_get (s, "key", 0) == NULL) {
-		exit(1);
+	sleep (4);
+	if (sdb_const_get (s, "key", 0) != NULL) {
+		return 2;
 	}
 	sdb_free (s);
 	return 0;
