@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             - name: Install Meson + Ninja
-              run: pip3 install meson ninja
+              run: sudo pip3 install meson ninja
 
             - uses: actions/checkout@v2
             - name: Running mmap build
