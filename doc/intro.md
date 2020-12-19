@@ -17,15 +17,16 @@ Description
 -----------
 
 This is the short description that comes from the README.md:
+```md
+sdb is a simple string key/value database based on djb's cdb
+disk storage and supports JSON and arrays introspection.
 
-    sdb is a simple string key/value database based on djb's cdb
-    disk storage and supports JSON and arrays introspection.
-    
-    mcsdbd is a memcache server with disk storage based on sdb.
-    It is distributed as a standalone binary and a library.
-    
-    There's also the sdbtypes: a vala library that implements
-    several data structures on top of an sdb or a memcache instance.
+mcsdbd is a memcache server with disk storage based on sdb.
+It is distributed as a standalone binary and a library.
+
+There's also the sdbtypes: a vala library that implements
+several data structures on top of an sdb or a memcache instance.
+```
 
 Contains
 --------
@@ -42,7 +43,7 @@ Rips
 ----
 - disk storage based on cdb code
 - memory hashtable based on wayland code
-- linked lists from r2 api
+- linked lists from rizin api
 
 Changes
 -------
