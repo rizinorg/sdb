@@ -15,8 +15,13 @@ jobs:
                 name: [ubuntu-20.04, windows-latest]
         runs-on: ${{ matrix.name }}
         steps:
-            - name: Install Meson + Ninja
+            - uses: actions/setup-python@v2
+            - name: Install Meson + Ninja (Linux)
+              if: matrix.name == 'ubuntu-20.04'
               run: sudo pip3 install meson ninja
+            - name: Install Meson + Ninja (Windows)
+              if: matrix.name == 'windows-latest'
+              run: pip install meson ninja
 
             - uses: actions/checkout@v2
             - name: Running mmap build
