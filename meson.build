@@ -1,5 +1,5 @@
 project('sdb', 'c', meson_version: '>=0.49.0', default_options: [
-  'b_vscrt=static_from_buildtype',
+  'b_vscrt=from_buildtype',
   'b_pie=true',
   'b_staticpic=true'])
 py3_exe = import('python').find_installation('python3')
@@ -42,12 +42,11 @@ configure_file(
 )
 
 if get_option('static_runtime').enabled()
-  if cc.has_link_argument('-static')
+  if cc.has_argument('/MT')
+    # Use -Db_vscrt=static_from_buildtype to avoid warnings due to multiple /M options
+    add_project_arguments('/MT', language: 'c')
+  elif cc.has_link_argument('-static')
     add_project_link_arguments('-static', language: 'c')
-  endif
-elif get_option('static_runtime').disabled()
-  if cc.has_argument('/MD')
-    add_project_arguments('/MD', language: 'c')
   endif
 endif
 
