@@ -9,8 +9,11 @@ on:
         - master
 
 jobs:
-    build:
-        runs-on: ubuntu-20.04
+    build-and-test:
+        strategy:
+            matrix:
+                name: [ubuntu-20.04, windows-latest]
+        runs-on: ${{ matrix.name }}
         steps:
             - name: Install Meson + Ninja
               run: sudo pip3 install meson ninja
