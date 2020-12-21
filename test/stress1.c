@@ -1,6 +1,5 @@
 #include <time.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -11,19 +10,6 @@ int main(int argc, char **argv) {
 	char *key, *value;
 	size_t i;
 	Sdb *s;
-
-	while ((opt = getopt (argc, argv, "hn:")) != -1) {
-		switch (opt) {
-		case 'n':
-			key_num = atoi (optarg);
-			break;
-		case 'h':
-		default:
-			fprintf (stderr, "Usage: %s [-n number of keys to insert]\n",
-					argv[0]);
-			return 0;
-		}
-	}
 
 	key = malloc (sizeof(char*) * SDB_KSZ);
 	value = malloc (sizeof(char*) * SDB_KSZ);

@@ -9,11 +9,19 @@ on:
         - master
 
 jobs:
-    build:
-        runs-on: ubuntu-20.04
+    build-and-test:
+        strategy:
+            matrix:
+                name: [ubuntu-20.04, windows-latest]
+        runs-on: ${{ matrix.name }}
         steps:
-            - name: Install Meson + Ninja
-              run: pip3 install -U meson ninja
+            - uses: actions/setup-python@v2
+            - name: Install Meson + Ninja (Linux)
+              if: matrix.name == 'ubuntu-20.04'
+              run: sudo pip3 install meson ninja
+            - name: Install Meson + Ninja (Windows)
+              if: matrix.name == 'windows-latest'
+              run: pip install meson ninja
 
             - uses: actions/checkout@v2
             - name: Running mmap build
@@ -34,3 +42,11 @@ jobs:
                   
             - name: Testing non-mmap build
               run: ninja -C build-nommap test
+
+            - name: Running static build
+              run: |
+                  meson --default-library=static -Dstatic_runtime=true build-static
+                  ninja -C build-static
+
+            - name: Testing static build
+              run: ninja -C build-static test

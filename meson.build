@@ -1,6 +1,9 @@
-project('sdb', 'c', meson_version: '>=0.47.0')
+project('sdb', 'c', meson_version: '>=0.49.0', default_options: [
+  'b_vscrt=from_buildtype'
+])
 py3_exe = import('python').find_installation('python3')
 pkgconfig_mod = import('pkgconfig')
+cc = meson.get_compiler('c')
 
 version_cmd = '''from sys import argv
 with open(argv[1]) as fd:
@@ -21,6 +24,13 @@ endif
 message('SDB version = ' + sdb_version)
 sdb_libversion = host_machine.system() == 'windows' ? '' : sdb_version
 
+rpath_lib = ''
+rpath_exe = ''
+if get_option('local') and get_option('default_library') == 'shared'
+  rpath_lib = '$ORIGIN'
+  rpath_exe = '$ORIGIN/../' + get_option('libdir')
+endif
+
 # Create sdb_version.h
 conf_data = configuration_data()
 conf_data.set_quoted('SDB_VERSION', sdb_version, description : 'From config.mk')
@@ -30,112 +40,46 @@ configure_file(
   install_dir : join_paths(get_option('includedir'), 'sdb')
 )
 
-libsdb_sources = [
-  'src/array.c',
-  'src/set.c',
-  'src/base64.c',
-  'src/buffer.c',
-  'src/cdb.c',
-  'src/cdb_make.c',
-  'src/dict.c',
-  'src/diff.c',
-  'src/disk.c',
-  'src/fmt.c',
-  'src/ht_uu.c',
-  'src/ht_pp.c',
-  'src/ht_up.c',
-  'src/journal.c',
-  'src/json.c',
-  #'src/json/api.c',
-  #'src/json/indent.c',
-  #'src/json/js0n.c',
-  #'src/json/path.c',
-  #'src/json/rangstr.c',
-  'src/lock.c',
-  'src/ls.c',
-  'src/match.c',
-  'src/ns.c',
-  'src/num.c',
-  'src/query.c',
-  'src/sdb.c',
-  'src/sdbht.c',
-  'src/util.c',
-  'src/text.c'
-]
-
-sdb_inc = include_directories(['.', 'src'])
-rpath_lib = ''
-rpath_exe = ''
-if get_option('local') and get_option('default_library') == 'shared'
-  rpath_lib = '$ORIGIN'
-  rpath_exe = '$ORIGIN/../' + get_option('libdir')
+if get_option('static_runtime')
+  if cc.has_argument('/MT')
+    # Use -Db_vscrt=static_from_buildtype to avoid warnings due to multiple /M options
+    add_project_arguments('/MT', language: 'c')
+  elif cc.has_link_argument('-static')
+    add_project_link_arguments('-static', language: 'c')
+  endif
 endif
 
-libsdb = library('sdb', libsdb_sources,
-  include_directories: sdb_inc,
-  implicit_include_directories: false,
-  soversion: sdb_libversion,
-  install: not meson.is_subproject(),
-  install_rpath: rpath_lib
-)
-
-sdb_dep = declare_dependency(
-  link_with: libsdb,
-  include_directories: sdb_inc
-)
-
-if not meson.is_subproject()
-  include_files = [
-    'src/buffer.h',
-    'src/cdb.h',
-    'src/cdb_make.h',
-    'src/config.h',
-    'src/dict.h',
-    'src/ht_inc.h',
-    'src/ht_pp.h',
-    'src/ht_up.h',
-    'src/ht_uu.h',
-    'src/ls.h',
-    'src/sdb.h',
-    'src/sdbht.h',
-    'src/set.h',
-    'src/types.h'
-  ]
-  install_headers(include_files, subdir: 'sdb')
+if cc.get_id() == 'clang-cl'
+  add_project_arguments('-D__STDC__=1', language: 'c')
+  add_project_arguments('-D_CRT_DECLARE_NONSTDC_NAMES ', language: 'c')
+  add_project_arguments('-D_CRT_SECURE_NO_WARNINGS', language: 'c')
+  add_project_arguments('-D_CRT_NONSTDC_NO_DEPRECATE', language: 'c')
 endif
+
+if get_option('default_library') == 'shared'
+  if cc.has_argument('-fvisibility=hidden')
+    add_project_arguments('-fvisibility=hidden', language: 'c')
+  endif
+endif
+
+subdir('src')
 
 sdb_exe = executable('sdb', 'src/main.c',
-  include_directories: sdb_inc,
-  link_with: libsdb,
+  dependencies: sdb_dep,
   install: not meson.is_subproject(),
   install_rpath: rpath_exe,
-  implicit_include_directories: false
+  implicit_include_directories: false,
 )
 
 if meson.is_cross_build()
   sdb_native_exe = executable('sdb_native', 'src/main.c',
-    include_directories: sdb_inc,
-    link_with: [link_with],
+    dependencies: sdb_dep,
     install: false,
-    implicit_include_directories: false
+    implicit_include_directories: false,
   )
 else
   sdb_native_exe = sdb_exe
 endif
-
-if not meson.is_subproject()
-  install_man(['src/sdb.1'])
-endif
-
-pkgconfig_mod.generate(
-  name: 'sdb',
-  filebase: 'sdb',
-  libraries: libsdb,
-  description: 'Simple DataBase',
-  subdirs: ['sdb'],
-  version: sdb_version,
-  url: 'https://github.com/rizinorg/sdb'
-)
 
 if not meson.is_subproject()
   subdir('test')
