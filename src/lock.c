@@ -20,7 +20,11 @@ SDB_API const char *sdb_lock_file(const char *f) {
 	return buf;
 }
 
+#if __SDB_WINDOWS__ && !__CYGWIN__
+#define os_getpid() _getpid()
+#else
 #define os_getpid() getpid()
+#endif
 
 SDB_API bool sdb_lock(const char *s) {
 	int fd;
@@ -32,7 +36,7 @@ SDB_API bool sdb_lock(const char *s) {
 	if (fd == -1) {
 		return false;
 	}
-	pid = sdb_itoa (getpid(), pidstr, 10);
+	pid = sdb_itoa (os_getpid(), pidstr, 10);
 	if (pid) {
 		if ((write (fd, pid, strlen (pid)) < 0)
 			|| (write (fd, "\n", 1) < 0)) {
