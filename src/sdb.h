@@ -42,6 +42,7 @@ extern "C" {
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <io.h>
+#define ftruncate _chsize
 #ifndef _MSC_VER
 extern __attribute__((dllimport)) void *__cdecl _aligned_malloc(size_t, size_t);
 extern __attribute__((dllimport)) void __cdecl _aligned_free(void *memblock);
@@ -50,7 +51,6 @@ extern char *strdup (const char *);
 #include <process.h>
 #include <windows.h>
 #include <malloc.h> // for _aligned_malloc
-#define ftruncate _chsize
 #endif
 
 //#define SDB_MODE 0
