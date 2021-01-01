@@ -21,6 +21,7 @@ SDB_API const char *sdb_lock_file(const char *f) {
 }
 
 #if __SDB_WINDOWS__ && !__CYGWIN__
+#include <process.h>
 #define os_getpid() _getpid()
 #else
 #define os_getpid() getpid()
