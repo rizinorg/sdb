@@ -48,7 +48,7 @@ bool test_sdb_list_big(void) {
 	Sdb *db = sdb_new0 ();
 	int i;
 	for (i = 0; i < 500000; i++) {
-    	sdb_num_set (db, sdb_fmt ("%d", i), i + 1, 0);
+	sdb_num_set (db, sdb_fmt ("%d", i), i + 1, 0);
 	}
 	SdbList *list = sdb_foreach_list (db, true);
 	// TODO: verify if its sorted
@@ -141,7 +141,7 @@ bool test_sdb_namespace(void) {
 		sdb_ns_sync (s);
 		// sdb_sync (n);
 		/* FIXED BUG2 crash in free */
-	 	sdb_free (s);
+		sdb_free (s);
 
 		int fd = open (dbname, O_RDONLY);
 		if (fd != -1) {
