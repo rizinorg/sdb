@@ -13,6 +13,6 @@ if get_option('enable_tests')
       install: false,
       implicit_include_directories: false
     )
-    test(test, exe, workdir: join_paths(meson.current_source_dir(), '..'))
+    test(test, exe, workdir: join_paths(meson.current_source_dir(), '..'), timeout: test == 'sdb' ? 45 : 30)
   endforeach
 endif
