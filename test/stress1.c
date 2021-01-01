@@ -6,7 +6,7 @@
 #include <sdb.h>
 
 int main(int argc, char **argv) {
-	int opt, key_num = 100;
+	int key_num = 100;
 	char *key, *value;
 	size_t i;
 	Sdb *s;
