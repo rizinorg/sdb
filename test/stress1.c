@@ -6,7 +6,7 @@
 #include <sdb.h>
 
 int main(int argc, char **argv) {
-	int opt, key_num = 100;
+	int key_num = 100;
 	char *key, *value;
 	size_t i;
 	Sdb *s;
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	for (i = 0; i < key_num; i++) {
 		key[rand () % 250] = 'a' + i % 26;
 		sdb_add (s, key, value, 0);
-	}	
+	}
 
 	sdb_sync (s);
 	sdb_disk_unlink (s);

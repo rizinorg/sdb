@@ -25,6 +25,8 @@ jobs:
 
             - uses: actions/checkout@v2
             - name: Running mmap build
+              env:
+                  CFLAGS: -Werror
               run: |
                   meson build-mmap
                   ninja -C build-mmap
@@ -34,7 +36,7 @@ jobs:
                   
             - name: Running non-mmap build
               env:
-                  CFLAGS: -DUSE_MMAN=-0
+                  CFLAGS: -Werror -DUSE_MMAN=-0
                   VERBOSE: 1
               run: |
                   meson build-nommap
@@ -44,6 +46,8 @@ jobs:
               run: ninja -C build-nommap test
 
             - name: Running static build
+              env:
+                  CFLAGS: -Werror
               run: |
                   meson --default-library=static -Dstatic_runtime=true build-static
                   ninja -C build-static

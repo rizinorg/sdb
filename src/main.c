@@ -191,7 +191,7 @@ static int sdb_grep_dump(const char *dbname, int fmt, bool grep,
 			if (!strcmp (v, "true") || !strcmp (v, "false")) {
 				printf ("%s\"%s\":%s", comma, k, v);
 			} else if (sdb_isnum (v)) {
-				printf ("%s\"%s\":%llu", comma, k, sdb_atoi (v));
+				printf ("%s\"%s\":%"ULLFMT"u", comma, k, sdb_atoi (v));
 			} else if (*v == '{' || *v == '[') {
 				printf ("%s\"%s\":%s", comma, k, v);
 			} else {
