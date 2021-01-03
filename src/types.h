@@ -50,10 +50,10 @@
 #include <inttypes.h>
 #if __SDB_WINDOWS__ && !__CYGWIN__
 #define HAVE_MMAN 0
-#define ULLFMT "I64"
+#define LLFMT "I64"
 #else
 #define HAVE_MMAN 1
-#define ULLFMT "ll"
+#define LLFMT "ll"
 #endif
 
 #ifndef USE_MMAN
