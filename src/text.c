@@ -2,6 +2,7 @@
 
 #include "sdb.h"
 
+#include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <sys/stat.h>
@@ -65,11 +66,9 @@ static int cmp_ns(const void *a, const void *b) {
 	return strcmp (nsa->name, cia->name);
 }
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
 #define write_(fd, buf, count) \
 	if (write ((fd), (buf), (count)) == -1) \
-		perror ("write_ ("#fd", "#buf", "#count") at "__FILE__":"TOSTRING(__LINE__)" failed")
+		eprintf ("write_ ("#fd", "#buf", "#count") at %s:%d failed: %s\n", __FILE__, __LINE__, strerror (errno))
 
 // n = position we are currently looking at
 // p = position until we have already written everything
@@ -184,8 +183,6 @@ static bool text_save(Sdb *s, int fd, bool sort, SdbList *path) {
 
 	return true;
 }
-#undef STRINGIFY
-#undef TOSTRING
 #undef write_
 
 SDB_API bool sdb_text_save_fd(Sdb *s, int fd, bool sort) {
