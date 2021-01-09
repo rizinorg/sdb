@@ -28,7 +28,7 @@ static void terminate(int sig UNUSED) {
 }
 
 static void write_null(void) {
-	(void)write (1, "", 1);
+	write_ (1, "", 1);
 }
 
 #define BS 128
@@ -353,7 +353,7 @@ static int base64decode(void) {
 		int declen;
 		out = sdb_decode (in, &declen);
 		if (out && declen >= 0) {
-			(void)write (1, out, declen);
+			write_ (1, out, declen);
 			ret = 0;
 		}
 		free (out);

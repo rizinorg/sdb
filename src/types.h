@@ -1,6 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <errno.h>
 #include <sys/types.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -101,6 +102,10 @@
 #endif
 
 #include "config.h"
+
+#define write_(fd, buf, count) \
+	if (write ((fd), (buf), (count)) == -1) \
+		eprintf ("write_ ("#fd", "#buf", "#count") at %s:%d failed: %s\n", __FILE__, __LINE__, strerror (errno))
 
 static inline int seek_set(int fd, off_t pos) {
 	return ((fd == -1) || (lseek (fd, (off_t) pos, SEEK_SET) == -1))? 0:1;

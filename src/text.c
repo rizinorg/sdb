@@ -2,7 +2,6 @@
 
 #include "sdb.h"
 
-#include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <sys/stat.h>
@@ -65,10 +64,6 @@ static int cmp_ns(const void *a, const void *b) {
 	const SdbNs *cia = b;
 	return strcmp (nsa->name, cia->name);
 }
-
-#define write_(fd, buf, count) \
-	if (write ((fd), (buf), (count)) == -1) \
-		eprintf ("write_ ("#fd", "#buf", "#count") at %s:%d failed: %s\n", __FILE__, __LINE__, strerror (errno))
 
 // n = position we are currently looking at
 // p = position until we have already written everything
