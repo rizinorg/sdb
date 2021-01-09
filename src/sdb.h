@@ -78,8 +78,8 @@ extern char *strdup (const char *);
 #define SDB_LIST_SORTED 1
 
 // This size implies trailing zero terminator, this is 254 chars + 0
-#define SDB_KSZ 0xff
-#define SDB_VSZ 0xffffff
+#define SDB_KSZ SDB_MAX_KEY
+#define SDB_VSZ SDB_MAX_VALUE
 
 
 typedef struct sdb_t {
