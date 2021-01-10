@@ -359,7 +359,7 @@ bool test_sdb_text_save_simple() {
 	bool succ = sdb_text_save_fd (db, fd, true);
 	lseek (fd, 0, SEEK_SET);
 	char buf[TEST_BUF_SZ] = { 0 };
-	read (fd, buf, sizeof (buf) - 1);
+	read_ (fd, buf, sizeof (buf) - 1);
 	close (fd);
 	unlink (".text_save_simple");
 
@@ -378,7 +378,7 @@ bool test_sdb_text_save_simple_unsorted() {
 	bool succ = sdb_text_save_fd (db, fd, false);
 	lseek (fd, 0, SEEK_SET);
 	char buf[TEST_BUF_SZ] = { 0 };
-	read (fd, buf, sizeof (buf) - 1);
+	read_ (fd, buf, sizeof (buf) - 1);
 	close (fd);
 	unlink (".text_save_simple_unsorted");
 
@@ -397,7 +397,7 @@ bool test_sdb_text_save() {
 	bool succ = sdb_text_save_fd (db, fd, true);
 	lseek (fd, 0, SEEK_SET);
 	char buf[TEST_BUF_SZ] = { 0 };
-	read (fd, buf, sizeof (buf) - 1);
+	read_ (fd, buf, sizeof (buf) - 1);
 	close (fd);
 	unlink (".text_save");
 

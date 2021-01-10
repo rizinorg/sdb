@@ -107,6 +107,10 @@
 	if (write ((fd), (buf), (count)) == -1) \
 		eprintf ("write_ ("#fd", "#buf", "#count") at %s:%d failed: %s\n", __FILE__, __LINE__, strerror (errno))
 
+#define read_(fd, buf, count) \
+	if (read ((fd), (buf), (count)) == -1) \
+		eprintf ("read_ ("#fd", "#buf", "#count") at %s:%d failed: %s\n", __FILE__, __LINE__, strerror (errno))
+
 static inline int seek_set(int fd, off_t pos) {
 	return ((fd == -1) || (lseek (fd, (off_t) pos, SEEK_SET) == -1))? 0:1;
 }
