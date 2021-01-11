@@ -68,7 +68,7 @@ static int cmp_ns(const void *a, const void *b) {
 // n = position we are currently looking at
 // p = position until we have already written everything
 // flush a block of text that doesn't have to be escaped
-#define FLUSH do { if (p != n) { write (fd, p, n - p); p = n; } } while (0)
+#define FLUSH do { if (p != n) { write_ (fd, p, n - p); p = n; } } while (0)
 // write and escape a string from str to fd
 #define ESCAPE_LOOP(fd, str, escapes) do { \
 		const char *p = str; \
@@ -83,11 +83,11 @@ static int cmp_ns(const void *a, const void *b) {
 		case c: \
 			FLUSH; \
 			p++; \
-			write (fd, "\\"repl, replsz + 1); \
+			write_ (fd, "\\"repl, replsz + 1); \
 			break;
 
 static void write_path(int fd, SdbList *path) {
-	write (fd, "/", 1); // always print a /, even if path is empty
+	write_ (fd, "/", 1); // always print a /, even if path is empty
 	SdbListIter *it;
 	const char *path_token;
 	bool first = true;
@@ -95,7 +95,7 @@ static void write_path(int fd, SdbList *path) {
 		if (first) {
 			first = false;
 		} else {
-			write (fd, "/", 1);
+			write_ (fd, "/", 1);
 		}
 		ESCAPE_LOOP (fd, path_token,
 			ESCAPE ('\\', "\\", 1);
@@ -109,7 +109,7 @@ static void write_path(int fd, SdbList *path) {
 static void write_key(int fd, const char *k) {
 	// escape leading '/'
 	if (*k == '/') {
-		write (fd, "\\", 1);
+		write_ (fd, "\\", 1);
 	}
 	ESCAPE_LOOP (fd, k,
 		ESCAPE ('\\', "\\", 1);
@@ -133,16 +133,16 @@ static void write_value(int fd, const char *v) {
 static bool save_kv_cb(void *user, const char *k, const char *v) {
 	int fd = *(int *)user;
 	write_key (fd, k);
-	write (fd, "=", 1);
+	write_ (fd, "=", 1);
 	write_value (fd, v);
-	write (fd, "\n", 1);
+	write_ (fd, "\n", 1);
 	return true;
 }
 
 static bool text_save(Sdb *s, int fd, bool sort, SdbList *path) {
 	// path
 	write_path (fd, path);
-	write (fd, "\n", 1);
+	write_ (fd, "\n", 1);
 
 	// k=v entries
 	if (sort) {
@@ -167,7 +167,7 @@ static bool text_save(Sdb *s, int fd, bool sort, SdbList *path) {
 	SdbNs *ns;
 	SdbListIter *it;
 	ls_foreach (l, it, ns) {
-		write (fd, "\n", 1);
+		write_ (fd, "\n", 1);
 		ls_push (path, ns->name);
 		text_save (ns->sdb, fd, sort, path);
 		ls_pop (path);
@@ -178,6 +178,7 @@ static bool text_save(Sdb *s, int fd, bool sort, SdbList *path) {
 
 	return true;
 }
+#undef write_
 
 SDB_API bool sdb_text_save_fd(Sdb *s, int fd, bool sort) {
 	SdbList *path = ls_new ();
