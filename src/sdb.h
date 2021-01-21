@@ -13,7 +13,6 @@ extern "C" {
 #include "types.h"
 #include "sdbht.h"
 #include "ls.h"
-#include "dict.h"
 #include "cdb.h"
 #include "cdb_make.h"
 #include "sdb_version.h"
@@ -106,7 +105,6 @@ typedef struct sdb_t {
 	SdbKv tmpkv;
 	ut32 depth;
 	bool timestamped;
-	SdbMini mht;
 } Sdb;
 
 typedef struct sdb_ns_t {
