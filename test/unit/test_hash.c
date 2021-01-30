@@ -3,6 +3,7 @@
 #include <ht_uu.h>
 #include <ht_up.h>
 #include <ht_pp.h>
+#include <ht_pu.h>
 
 typedef struct _test_struct {
 	char *name;
@@ -501,6 +502,37 @@ bool test_update_key(void) {
 	mu_end;
 }
 
+bool test_ht_pu_ops(void) {
+	bool res;
+	ut64 val;
+	HtPU *ht = ht_pu_new0 ();
+
+	ht_pu_insert (ht, "key1", 0xcafebabe);
+	val = ht_pu_find (ht, "key1", &res);
+	mu_assert_eq (val, 0xcafebabe, "0xcafebabe should be retrieved");
+	mu_assert ("found should be true", res);
+
+	res = ht_pu_insert (ht, "key1", 0xdeadbeefdeadbeef);
+	mu_assert ("key1 should be an already existing element", !res);
+	val = ht_pu_find (ht, "key1", &res);
+	mu_assert_eq (val, 0xcafebabe, "0xcafebabe should still be retrieved");
+
+	res = ht_pu_update (ht, "key1", 0xdeadbeefdeadbeef);
+	mu_assert ("key1 should be updated", res);
+	val = ht_pu_find (ht, "key1", &res);
+	mu_assert_eq (val, 0xdeadbeefdeadbeef, "0xdeadbeefdeadbeef should be retrieved");
+	mu_assert ("found should be true", res);
+
+	res = ht_pu_delete (ht, "key1");
+	mu_assert ("key1 should be deleted", res);
+	val = ht_pu_find (ht, "key1", &res);
+	mu_assert_eq (val, 0, "0 should be retrieved");
+	mu_assert ("found should be false", !res);
+
+	ht_pu_free (ht);
+	mu_end;
+}
+
 int all_tests() {
 	mu_run_test (test_ht_insert_lookup);
 	mu_run_test (test_ht_update_lookup);
@@ -520,6 +552,7 @@ int all_tests() {
 	mu_run_test (test_grow_4);
 	mu_run_test (test_foreach_delete);
 	mu_run_test (test_update_key);
+	mu_run_test (test_ht_pu_ops);
 	return tests_passed != tests_run;
 }
 

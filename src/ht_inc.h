@@ -28,13 +28,21 @@
 #define VALUE_TYPE void *
 #define KEY_TO_HASH(x) ((ut32)(x))
 #define HT_NULL_VALUE 0
-#else
+#elif HT_TYPE == 3
 #define HtName_(name) name##UU
 #define Ht_(name) ht_uu_##name
 #define HT_(name) HtUU##name
 #define KEY_TYPE ut64
 #define VALUE_TYPE ut64
 #define KEY_TO_HASH(x) ((ut32)(x))
+#define HT_NULL_VALUE 0
+#else
+#define HtName_(name) name##PU
+#define Ht_(name) ht_pu_##name
+#define HT_(name) HtPU##name
+#define KEY_TYPE void *
+#define VALUE_TYPE ut64
+#define KEY_TO_HASH(x) ((ut32)(uintptr_t)(x))
 #define HT_NULL_VALUE 0
 #endif
 
