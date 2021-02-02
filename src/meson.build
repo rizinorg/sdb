@@ -46,6 +46,22 @@ sdb_dep = declare_dependency(
   include_directories: libsdb_inc,
 )
 
+if meson.is_cross_build()
+  libsdb_native = library('sdb_native', libsdb_sources,
+    native: true,
+    include_directories: libsdb_inc,
+    implicit_include_directories: false,
+    soversion: sdb_libversion,
+    install: not meson.is_subproject(),
+    install_rpath: rpath_lib
+  )
+
+  sdb_native_dep = declare_dependency(
+    link_with: libsdb_native,
+    include_directories: libsdb_inc,
+  )
+endif
+
 if not meson.is_subproject()
   pkgconfig_mod.generate(libsdb,
     name: 'sdb',
