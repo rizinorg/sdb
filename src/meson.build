@@ -1,4 +1,4 @@
-libsdb_sources = [
+libsdb_sources = files(
   'array.c',
   'set.c',
   'base64.c',
@@ -29,7 +29,7 @@ libsdb_sources = [
   'sdbht.c',
   'util.c',
   'text.c'
-]
+)
 
 libsdb_inc = include_directories(['..', '.'])
 

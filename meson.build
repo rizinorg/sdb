@@ -85,6 +85,7 @@ if meson.is_cross_build()
   sdb_native_exe = executable('sdb_native', 'src/main.c',
     dependencies: sdb_native_dep,
     install: false,
+    native: true,
     implicit_include_directories: false,
   )
 else
