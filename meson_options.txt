@@ -1,3 +1,5 @@
 option('enable_tests', type: 'boolean', value: true, description: 'Build unit tests in test/unit')
 option('local', type: 'boolean', value: false, description: 'Adds support for local/side-by-side installation (sets rpath if needed)')
 option('static_runtime', type: 'boolean', value: false, description: 'Use static runtime (e.g. /MT on Windows, -static on Unix).')
+
+option('sdb_includedir', type: 'string', value: '', description: 'Install path for SDB headers.')

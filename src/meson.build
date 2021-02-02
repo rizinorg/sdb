@@ -52,8 +52,7 @@ if meson.is_cross_build()
     include_directories: libsdb_inc,
     implicit_include_directories: false,
     soversion: sdb_libversion,
-    install: not meson.is_subproject(),
-    install_rpath: rpath_lib
+    install: false,
   )
 
   sdb_native_dep = declare_dependency(
@@ -61,6 +60,25 @@ if meson.is_cross_build()
     include_directories: libsdb_inc,
   )
 endif
+
+include_files = files(
+  'buffer.h',
+  'cdb.h',
+  'cdb_make.h',
+  'config.h',
+  'ht_inc.h',
+  'ht_pp.h',
+  'ht_up.h',
+  'ht_uu.h',
+  'ht_pu.h',
+  'ls.h',
+  'sdb.h',
+  'sdbht.h',
+  'set.h',
+  'types.h'
+)
+
+install_headers(include_files, install_dir: join_paths(sdb_incdir, 'sdb'))
 
 if not meson.is_subproject()
   pkgconfig_mod.generate(libsdb,
@@ -72,22 +90,5 @@ if not meson.is_subproject()
     url: 'https://github.com/rizinorg/sdb'
   )
 
-  include_files = [
-    'buffer.h',
-    'cdb.h',
-    'cdb_make.h',
-    'config.h',
-    'ht_inc.h',
-    'ht_pp.h',
-    'ht_up.h',
-    'ht_uu.h',
-    'ht_pu.h',
-    'ls.h',
-    'sdb.h',
-    'sdbht.h',
-    'set.h',
-    'types.h'
-  ]
-  install_headers(include_files)
   install_man(['sdb.1'])
 endif
