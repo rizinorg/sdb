@@ -1,9 +1,14 @@
-project('sdb', 'c', meson_version: '>=0.49.0', default_options: [
+project('sdb', 'c', meson_version: '>=0.50.0', default_options: [
   'buildtype=debugoptimized', 'b_vscrt=from_buildtype'
 ])
 py3_exe = import('python').find_installation('python3')
 pkgconfig_mod = import('pkgconfig')
 cc = meson.get_compiler('c')
+
+sdb_incdir = get_option('includedir')
+if get_option('sdb_includedir') != ''
+  sdb_incdir = get_option('sdb_includedir')
+endif
 
 version_cmd = '''from sys import argv
 with open(argv[1]) as fd:
@@ -34,10 +39,10 @@ endif
 # Create sdb_version.h
 conf_data = configuration_data()
 conf_data.set_quoted('SDB_VERSION', sdb_version, description : 'From config.mk')
-configure_file(
+sdb_version_h = configure_file(
   output : 'sdb_version.h',
   configuration : conf_data,
-  install_dir : join_paths(get_option('includedir'), 'sdb')
+  install_dir : join_paths(sdb_incdir, 'sdb'),
 )
 
 if get_option('static_runtime')
@@ -78,7 +83,7 @@ sdb_exe = executable('sdb', 'src/main.c',
 
 if meson.is_cross_build()
   sdb_native_exe = executable('sdb_native', 'src/main.c',
-    dependencies: sdb_dep,
+    dependencies: sdb_native_dep,
     install: false,
     native: true,
     implicit_include_directories: false,
