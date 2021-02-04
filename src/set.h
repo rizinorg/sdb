@@ -7,9 +7,9 @@
 typedef HtPP SetP;
 
 SDB_API SetP *set_p_new(void);
-SDB_API void set_p_add(SetP *p, void *u);
-SDB_API bool set_p_contains(SetP *s, void *u);
-SDB_API void set_p_delete(SetP *s, void *u);
+SDB_API void set_p_add(SetP *p, const void *u);
+SDB_API bool set_p_contains(SetP *s, const void *u);
+SDB_API void set_p_delete(SetP *s, const void *u);
 SDB_API void set_p_free(SetP *p);
 
 typedef HtUP SetU;

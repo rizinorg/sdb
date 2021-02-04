@@ -8,15 +8,15 @@ SDB_API SetP *set_p_new(void) {
 	return ht_pp_new0 ();
 }
 
-SDB_API void set_p_add(SetP *s, void *u) {
+SDB_API void set_p_add(SetP *s, const void *u) {
 	ht_pp_insert (s, u, (void*)1);
 }
 
-SDB_API bool set_p_contains(SetP *s, void *u) {
+SDB_API bool set_p_contains(SetP *s, const void *u) {
 	return ht_pp_find (s, u, NULL) != NULL;
 }
 
-SDB_API void set_p_delete(SetP *s, void *u) {
+SDB_API void set_p_delete(SetP *s, const void *u) {
 	ht_pp_delete (s, u);
 }
 
