@@ -36,12 +36,26 @@ if get_option('local') and get_option('default_library') == 'shared'
   rpath_exe = '$ORIGIN/../' + get_option('libdir')
 endif
 
+userconf = configuration_data()
+userconf.set10('HAVE__GETPID', false)
+have_getpid = cc.has_function('getpid', prefix: '#include <unistd.h>')
+userconf.set10('HAVE_GETPID', have_getpid)
+if not have_getpid
+  userconf.set10('HAVE__GETPID', cc.has_function('_getpid', prefix: '#include <process.h>'))
+endif
+sdb_userconf_h = configure_file(
+  input : 'src/sdb_userconf.h.in',
+  output : 'sdb_userconf.h',
+  configuration : userconf,
+  install_dir : join_paths(sdb_incdir, 'sdb'),
+)
+
 # Create sdb_version.h
-conf_data = configuration_data()
-conf_data.set_quoted('SDB_VERSION', sdb_version, description : 'From config.mk')
+versionconf = configuration_data()
+versionconf.set_quoted('SDB_VERSION', sdb_version, description : 'From config.mk')
 sdb_version_h = configure_file(
   output : 'sdb_version.h',
-  configuration : conf_data,
+  configuration : versionconf,
   install_dir : join_paths(sdb_incdir, 'sdb'),
 )
 

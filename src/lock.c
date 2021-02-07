@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include "sdb.h"
+#include "sdb_userconf.h"
 
 SDB_API const char *sdb_lock_file(const char *f) {
 	static char buf[128];
@@ -20,11 +21,13 @@ SDB_API const char *sdb_lock_file(const char *f) {
 	return buf;
 }
 
-#if __SDB_WINDOWS__ && !__CYGWIN__
+#if HAVE_GETPID
+#define os_getpid() getpid()
+#elif HAVE__GETPID
 #include <process.h>
 #define os_getpid() _getpid()
 #else
-#define os_getpid() getpid()
+#error No supported getpid() found
 #endif
 
 SDB_API bool sdb_lock(const char *s) {
