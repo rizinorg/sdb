@@ -22,6 +22,7 @@ SDB_API const char *sdb_lock_file(const char *f) {
 }
 
 #if HAVE_GETPID
+#include <unistd.h>
 #define os_getpid() getpid()
 #elif HAVE__GETPID
 #include <process.h>
