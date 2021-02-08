@@ -37,12 +37,8 @@ if get_option('local') and get_option('default_library') == 'shared'
 endif
 
 userconf = configuration_data()
-userconf.set10('HAVE__GETPID', false)
-have_getpid = cc.has_function('getpid', prefix: '#include <unistd.h>')
-userconf.set10('HAVE_GETPID', have_getpid)
-if not have_getpid
-  userconf.set10('HAVE__GETPID', cc.has_function('_getpid', prefix: '#include <process.h>'))
-endif
+userconf.set10('HAVE_GETPID', cc.has_function('getpid', prefix: '#include <unistd.h>'))
+userconf.set10('HAVE__GETPID', cc.has_function('_getpid', prefix: '#include <process.h>'))
 sdb_userconf_h = configure_file(
   input : 'src/sdb_userconf.h.in',
   output : 'sdb_userconf.h',
