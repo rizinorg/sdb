@@ -154,6 +154,43 @@ bool test_sdb_namespace(void) {
 	mu_end;
 }
 
+static bool foreach_filter_user_cb(void *user, const char *key, const char *val) {
+	Sdb *db = (Sdb *)user;
+	const char *v = sdb_const_get(db, key, NULL);
+	if (!v) {
+		return false;
+	}
+	return key[0] == 'b' && v[0] == 'c';
+}
+
+bool test_sdb_foreach_filter_user(void) {
+	Sdb *db = sdb_new (NULL, NULL, false);
+	sdb_set (db, "crow", NULL, 0);
+	sdb_set (db, "foo", "bar", 0);
+	sdb_set (db, "bar", "cow", 0);
+	sdb_set (db, "bag", "horse", 0);
+	sdb_set (db, "boo", "cow", 0);
+	sdb_set (db, "bog", "horse", 0);
+	sdb_set (db, "low", "bar", 0);
+	sdb_set (db, "bip", "cow", 0);
+	sdb_set (db, "big", "horse", 0);
+	SdbList *ls = sdb_foreach_list_filter_user (db, foreach_filter_user_cb, true, db);
+	SdbListIter *it = ls_iterator (ls);
+	HtPPKv *kv = ls_iter_get (it);
+	mu_assert_streq ((const char *)kv->key, "bar", "list should be sorted");
+	mu_assert_streq ((const char *)kv->value, "cow", "list should be filtered");
+	kv = ls_iter_get (it);
+	mu_assert_streq ((const char *)kv->key, "bip", "list should be sorted");
+	mu_assert_streq ((const char *)kv->value, "cow", "list should be filtered");
+	kv = ls_iter_get (it);
+	mu_assert_streq ((const char *)kv->key, "boo", "list should be sorted");
+	mu_assert_streq ((const char *)kv->value, "cow", "list should be filtered");
+	mu_assert_null (it, "list should be terminated");
+	ls_free (ls);
+	sdb_free (db);
+	mu_end;
+}
+
 static bool foreach_filter_cb(void *user, const char *key, const char *val) {
 	return key[0] == 'b';
 }
@@ -517,6 +554,7 @@ int all_tests() {
 	mu_run_test (test_sdb_milset);
 	mu_run_test (test_sdb_milset_random);
 	mu_run_test (test_sdb_list_big);
+	mu_run_test (test_sdb_foreach_filter_user);
 	mu_run_test (test_sdb_foreach_filter);
 	mu_run_test (test_sdb_copy);
 	mu_run_test (test_sdb_text_save_simple);

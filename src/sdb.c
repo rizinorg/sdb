@@ -662,6 +662,7 @@ SDB_API SdbList *sdb_foreach_list(Sdb* s, bool sorted) {
 struct foreach_list_filter_t {
 	SdbForeachCallback filter;
 	SdbList *list;
+	void *user;
 };
 
 static bool sdb_foreach_list_filter_cb(void *user, const char *k, const char *v) {
@@ -669,7 +670,7 @@ static bool sdb_foreach_list_filter_cb(void *user, const char *k, const char *v)
 	SdbList *list = u->list;
 	SdbKv *kv = NULL;
 
-	if (!u->filter || u->filter (NULL, k, v)) {
+	if (!u->filter || u->filter (u->user, k, v)) {
 		kv = R_NEW0 (SdbKv);
 		if (!kv) {
 			goto err;
@@ -687,7 +688,7 @@ static bool sdb_foreach_list_filter_cb(void *user, const char *k, const char *v)
 	return false;
 }
 
-SDB_API SdbList *sdb_foreach_list_filter(Sdb* s, SdbForeachCallback filter, bool sorted) {
+SDB_API SdbList *sdb_foreach_list_filter_user(Sdb* s, SdbForeachCallback filter, bool sorted, void *user) {
 	struct foreach_list_filter_t u;
 	SdbList *list = ls_newf ((SdbListFree)sdbkv_free);
 
@@ -696,11 +697,16 @@ SDB_API SdbList *sdb_foreach_list_filter(Sdb* s, SdbForeachCallback filter, bool
 	}
 	u.filter = filter;
 	u.list = list;
+	u.user = user;
 	sdb_foreach (s, sdb_foreach_list_filter_cb, &u);
 	if (sorted) {
 		ls_sort (list, __cmp_asc);
 	}
 	return list;
+}
+
+SDB_API SdbList *sdb_foreach_list_filter(Sdb* s, SdbForeachCallback filter, bool sorted) {
+	return sdb_foreach_list_filter_user(s, filter, sorted, NULL);
 }
 
 typedef struct {

@@ -137,6 +137,7 @@ SDB_API bool sdb_dump_hasnext (Sdb* s);
 typedef bool (*SdbForeachCallback)(void *user, const char *k, const char *v);
 SDB_API bool sdb_foreach(Sdb* s, SdbForeachCallback cb, void *user);
 SDB_API SdbList *sdb_foreach_list(Sdb* s, bool sorted);
+SDB_API SdbList *sdb_foreach_list_filter_user(Sdb* s, SdbForeachCallback filter, bool sorted, void *user);
 SDB_API SdbList *sdb_foreach_list_filter(Sdb* s, SdbForeachCallback filter, bool sorted);
 SDB_API SdbList *sdb_foreach_match(Sdb* s, const char *expr, bool sorted);
 
@@ -166,7 +167,7 @@ SDB_API int sdb_diff_format(char *str, int size, const SdbDiff *diff);
 typedef void (*SdbDiffCallback)(const SdbDiff *diff, void *user);
 
 // Returns true iff the contents of a and b are equal including contained namespaces
-// If cb is non-null, it will be called subsequently with differences. 
+// If cb is non-null, it will be called subsequently with differences.
 SDB_API bool sdb_diff(Sdb *a, Sdb *b, SdbDiffCallback cb, void *cb_user);
 
 // Gets a pointer to the value associated with `key`.
