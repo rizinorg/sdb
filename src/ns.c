@@ -25,7 +25,7 @@ static int in_list(SdbList *list, void *item) {
 	return 0;
 }
 
-static void ns_free(Sdb *s, SdbList *list) {
+static void ns_free_exc_list(Sdb *s, SdbList *list) {
 	SdbListIter next;
 	SdbListIter *it;
 	int deleted;
@@ -55,7 +55,7 @@ static void ns_free(Sdb *s, SdbList *list) {
 			}
 			ls_append (list, ns);
 			ls_append (list, ns->sdb);
-			ns_free (ns->sdb, list);
+			ns_free_exc_list (ns->sdb, list);
 			sdb_free (ns->sdb);
 		}
 		if (!deleted) {
@@ -70,14 +70,14 @@ static void ns_free(Sdb *s, SdbList *list) {
 	s->ns = NULL;
 }
 
-SDB_API void sdb_ns_free(Sdb *s) {
+SDB_API void sdb_ns_free_all(Sdb *s) {
 	SdbList *list;
 	if (!s) {
 		return;
 	}
 	list = ls_new ();
 	list->free = NULL;
-	ns_free (s, list);
+	ns_free_exc_list (s, list);
 	ls_free (list);
 	ls_free (s->ns);
 	s->ns = NULL;
