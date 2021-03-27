@@ -193,7 +193,7 @@ static void sdb_fini(Sdb* s, int donull) {
 	if (s->lock) {
 		sdb_unlock (sdb_lock_file (s->dir));
 	}
-	sdb_ns_free (s);
+	sdb_ns_free_all (s);
 	s->refs = 0;
 	free (s->name);
 	free (s->path);
