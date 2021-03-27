@@ -126,22 +126,24 @@ static SdbNs *sdb_ns_new (Sdb *s, const char *name, ut32 hash) {
 	return ns;
 }
 
+static void sdb_ns_free(SdbNs *ns) {
+	sdb_free (ns->sdb);
+	free (ns->name);
+	free (ns);
+}
+
 SDB_API bool sdb_ns_unset (Sdb *s, const char *name, Sdb *r) {
 	SdbNs *ns;
 	SdbListIter *it;
 	if (s && (name || r)) {
 		ls_foreach (s->ns, it, ns) {
 			if (name && (!strcmp (name, ns->name))) {
-				sdb_free (ns->sdb);
-				free (ns->name);
-				free (ns);
+				sdb_ns_free (ns);
 				ls_delete (s->ns, it);
 				return true;
 			}
 			if (r && ns->sdb == r) {
-				sdb_free (ns->sdb);
-				free (ns->name);
-				free (ns);
+				sdb_ns_free (ns);
 				ls_delete (s->ns, it);
 				return true;
 			}
