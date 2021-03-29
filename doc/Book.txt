@@ -15,5 +15,4 @@ refs.md
 locks.md
 cas.md
 expire.md
-bindings.md
 backups.md

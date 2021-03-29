@@ -4,18 +4,6 @@ SDB (string database)
 sdb is a simple string key/value database based on djb's cdb
 disk storage and supports JSON and arrays introspection.
 
-mcsdbd is a memcache server with disk storage based on sdb.
-It is distributed as a standalone binary and a library.
-
-There's also the sdbtypes: a vala library that implements
-several data structures on top of an sdb or a memcache instance.
-
-[![Travis](https://api.travis-ci.com/rizinorg/sdb.svg)](https://travis-ci.com/rizinorg/sdb)
-
-[![Appveyor](https://ci.appveyor.com/api/projects/status/github/radareorg/sdb?branch=master&svg=true)](https://ci.appveyor.com/project/radareorg/sdb)
-
-[![Build Status](https://scan.coverity.com/projects/1651/badge.svg)](https://scan.coverity.com/projects/1651)
-
 Author
 ------
 pancake <pancake@nopcode.org>
@@ -24,9 +12,7 @@ Contains
 --------
 * namespaces (multiple sdb paths)
 * atomic database sync (never corrupted)
-* bindings for vala, luvit, newlisp and nodejs
 * commandline frontend for sdb databases
-* memcache client and server with sdb backend
 * arrays support (syntax sugar)
 * json parser/getter (js0n.c)
 
@@ -37,11 +23,11 @@ Rips
 
 Compilation
 -----------
-For native builds just type `make`. Everything will be compiled twice to get the .dylib and .a and sdb in PIC and nonPIC modes.
-
-To compile with Emscripten for Javascript:
-
-	make CC=emcc EXT_EXE=.js
+SDB requires [Meson](https://mesonbuild.com/) and [Ninja](https://ninja-build.org/) buildsystems to be built:
+```
+meson build
+ninja -C build
+```
 
 Changes
 -------
