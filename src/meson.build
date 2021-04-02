@@ -46,6 +46,11 @@ sdb_dep = declare_dependency(
   include_directories: libsdb_inc,
 )
 
+sdb_whole_dep = declare_dependency(
+  link_whole: libsdb,
+  include_directories: libsdb_inc,
+)
+
 if meson.is_cross_build()
   libsdb_native = static_library('sdb_native', libsdb_sources,
     native: true,
