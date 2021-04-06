@@ -77,11 +77,6 @@ if get_option('default_library') == 'shared'
   endif
 endif
 
-if host_machine.system() == 'windows' and get_option('default_library') == 'static'
-  add_project_arguments('-DSDB_API=', language: 'c')
-  add_project_arguments('-DSDB_IPI=', language: 'c')
-endif
-
 subdir('src')
 
 sdb_exe = executable('sdb', 'src/main.c',
