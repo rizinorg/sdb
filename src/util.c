@@ -330,9 +330,6 @@ SDB_API const char *sdb_type(const char *k) {
 	if (sdb_isnum (k)) {
 		return "number";
 	}
-	if (sdb_isjson (k)) {
-		return "json";
-	}
 	if (strchr (k, ',')) {
 		return "array";
 	}
@@ -342,37 +339,3 @@ SDB_API const char *sdb_type(const char *k) {
 	return "string";
 }
 
-// TODO: check all the values
-SDB_API bool sdb_isjson (const char *k) {
-	int level = 0;
-	bool quotes = false;
-	if (!k || (*k != '{' && *k != '[')) {
-		return false;
-	}
-	for (; *k; k++) {
-		if (quotes) {
-			if (*k == '"') {
-				quotes = false;
-			}
-			continue;
-		}
-		switch (*k) {
-		case '"':
-			quotes = true;
-			break;
-		case '[':
-		case '{':
-			level++;
-			break;
-		case ']':
-		case '}':
-			level--;
-			if (level < 0) {
-				/* invalid json */
-				return false;
-			}
-			break;
-		}
-	}
-	return (!quotes && !level);
-}
