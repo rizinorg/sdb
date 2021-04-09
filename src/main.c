@@ -7,7 +7,6 @@
 #include "sdb.h"
 
 #define MODE_ZERO '0'
-#define MODE_JSON 'j'
 #define MODE_DFLT 0
 
 static int save = 0;
@@ -170,7 +169,6 @@ static void synchronize(int sig UNUSED) {
 static int sdb_grep_dump(const char *dbname, int fmt, bool grep,
                          const char *expgrep) {
 	char *v, k[SDB_CDB_MAX_KEY] = { 0 };
-	const char *comma = "";
 	// local db beacuse is readonly and we dont need to finalize in case of ^C
 	Sdb *db = sdb_new (NULL, dbname, 0);
 	if (!db) {
@@ -178,27 +176,12 @@ static int sdb_grep_dump(const char *dbname, int fmt, bool grep,
 	}
 	sdb_config (db, options);
 	sdb_dump_begin (db);
-	if (fmt == MODE_JSON) {
-		printf ("{");
-	}
 	while (sdb_dump_dupnext (db, k, &v, NULL)) {
 		if (grep && !strstr (k, expgrep) && !strstr (v, expgrep)) {
 			free (v);
 			continue;
 		}
 		switch (fmt) {
-		case MODE_JSON:
-			if (!strcmp (v, "true") || !strcmp (v, "false")) {
-				printf ("%s\"%s\":%s", comma, k, v);
-			} else if (sdb_isnum (v)) {
-				printf ("%s\"%s\":%"LLFMT"u", comma, k, sdb_atoi (v));
-			} else if (*v == '{' || *v == '[') {
-				printf ("%s\"%s\":%s", comma, k, v);
-			} else {
-				printf ("%s\"%s\":\"%s\"", comma, k, v);
-			}
-			comma = ",";
-			break;
 		case MODE_ZERO:
 			printf ("%s=%s", k, v);
 			break;
@@ -208,14 +191,9 @@ static int sdb_grep_dump(const char *dbname, int fmt, bool grep,
 		}
 		free (v);
 	}
-	switch (fmt) {
-	case MODE_ZERO:
+	if (fmt == MODE_ZERO) {
 		fflush (stdout);
 		write_null ();
-		break;
-	case MODE_JSON:
-		printf ("}\n");
-		break;
 	}
 	sdb_free (db);
 	return 0;
@@ -287,7 +265,7 @@ static int createdb(const char *f, const char **args, int nargs) {
 
 static int showusage(int o) {
 	printf ("usage: sdb [-0cdehjJv|-D A B] [-|db] "
-		"[.file]|[-=]|==||[-+][(idx)key[:json|=value] ..]\n");
+		"[.file]|[-=]|==||[-+][(idx)key[|=value] ..]\n");
 	if (o == 2) {
 		printf ("  -0      terminate results with \\x00\n"
 			"  -c      count the number of keys database\n"
@@ -295,7 +273,6 @@ static int showusage(int o) {
 			"  -D      diff two databases\n"
 			"  -e      encode stdin as base64\n"
 			"  -h      show this help\n"
-			"  -j      output in json\n"
 			"  -J      enable journaling\n"
 			"  -v      show version information\n");
 		return 0;
@@ -306,24 +283,6 @@ static int showusage(int o) {
 static int showversion(void) {
 	printf ("sdb "SDB_VERSION "\n");
 	fflush (stdout);
-	return 0;
-}
-
-static int jsonIndent(void) {
-	size_t len;
-	char *out;
-	char *in = slurp (stdin, &len);
-	if (!in) {
-		return 0;
-	}
-	out = sdb_json_indent (in, "  ");
-	if (!out) {
-		free (in);
-		return 1;
-	}
-	puts (out);
-	free (out);
-	free (in);
 	return 0;
 }
 
@@ -457,11 +416,6 @@ int main(int argc, const char **argv) {
 				return dbdiff (argv[2], argv[3]) ? 0 : 1;
 			}
 			return showusage (0);
-		case 'j':
-			if (argc > 2) {
-				return sdb_dump (argv[db0 + 1], MODE_JSON);
-			}
-			return jsonIndent ();
 		default:
 			eprintf ("Invalid flag %s\n", arg);
 			break;
