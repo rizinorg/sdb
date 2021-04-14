@@ -19,7 +19,7 @@ Description
 This is the short description that comes from the README.md:
 ```md
 sdb is a simple string key/value database based on djb's cdb
-disk storage and supports JSON and arrays introspection.
+disk storage and supports arrays introspection.
 
 mcsdbd is a memcache server with disk storage based on sdb.
 It is distributed as a standalone binary and a library.
@@ -33,11 +33,8 @@ Contains
 
 - namespaces (multiple sdb paths)
 - atomic database sync (never corrupted)
-- bindings for vala, luvit, newlisp and nodejs
 - commandline frontend for sdb databases
-- memcache client and server with sdb backend
 - arrays support (syntax sugar)
-- json parser/getter (js0n.c)
 
 Rips
 ----

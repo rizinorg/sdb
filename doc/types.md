@@ -45,4 +45,4 @@ true/false strings are handled as boolean when using them with:
 Complex types:
 --------------
 
-See json.md and array.md for more information about the complex types supported in sdb.
+See array.md for more information about the complex types supported in sdb.
