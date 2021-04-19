@@ -29,19 +29,21 @@ jobs:
                   CFLAGS: -Werror
               run: |
                   meson build-mmap
+                  meson configure build-mmap -Db_sanitize=address,undefined --werror
                   ninja -C build-mmap
-                  
+
             - name: Testing mmap build
               run: ninja -C build-mmap test
-                  
+
             - name: Running non-mmap build
               env:
                   CFLAGS: -Werror -DUSE_MMAN=-0
                   VERBOSE: 1
               run: |
                   meson build-nommap
+                  meson configure build-nommap -Db_sanitize=address,undefined --werror
                   ninja -C build-nommap
-                  
+
             - name: Testing non-mmap build
               run: ninja -C build-nommap test
 
@@ -50,6 +52,7 @@ jobs:
                   CFLAGS: -Werror
               run: |
                   meson --default-library=static -Dstatic_runtime=true build-static
+                  meson configure build-static -Db_sanitize=address,undefined --werror
                   ninja -C build-static
 
             - name: Testing static build
