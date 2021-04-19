@@ -4,6 +4,8 @@
 #include <stdio.h>
 
 static bool foreach_delete_cb(void *user, const char *key, const char *val) {
+	UNUSED(val);
+
 	if (strcmp (key, "bar")) {
 		sdb_unset (user, key, 0);
 	}
@@ -155,6 +157,8 @@ bool test_sdb_namespace(void) {
 }
 
 static bool foreach_filter_user_cb(void *user, const char *key, const char *val) {
+	UNUSED(val);
+
 	Sdb *db = (Sdb *)user;
 	const char *v = sdb_const_get(db, key, NULL);
 	if (!v) {
@@ -192,6 +196,9 @@ bool test_sdb_foreach_filter_user(void) {
 }
 
 static bool foreach_filter_cb(void *user, const char *key, const char *val) {
+	UNUSED(user);
+	UNUSED(val);
+
 	return key[0] == 'b';
 }
 
@@ -447,6 +454,8 @@ bool test_sdb_text_save() {
 }
 
 static void diff_cb(const SdbDiff *diff, void *user) {
+	UNUSED(user);
+
 	char buf[2048];
 	if (sdb_diff_format (buf, sizeof (buf), diff) < 0) {
 		return;
@@ -569,6 +578,6 @@ int all_tests() {
 	return tests_passed != tests_run;
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 	return all_tests ();
 }

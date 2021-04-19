@@ -1,6 +1,9 @@
 #include "sdb.h"
 
 void ptr(Sdb *s, void *user, const char *k, const char *v) {
+	UNUSED(user);
+	UNUSED(s);
+
 	printf ("%s %s\n", k, v);
 }
 

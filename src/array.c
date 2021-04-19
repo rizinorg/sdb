@@ -419,6 +419,8 @@ SDB_API int sdb_array_remove_num(Sdb *s, const char *key, ut64 val, ut32 cas) {
 /* get array index of given value */
 SDB_API int sdb_array_indexof(Sdb *s, const char *key, const char *val,
 			       ut32 cas) {
+	UNUSED(cas);
+
 	const char *str = sdb_const_get (s, key, 0);
 	const char *n, *p = str;
 	int i;

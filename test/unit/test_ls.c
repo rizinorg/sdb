@@ -55,10 +55,14 @@ bool test_ls_join(void) {
 	mu_end;
 }
 
+void fake_sdb_list_free(void *ptr) {
+	UNUSED(ptr);
+	return;
+}
 
 bool test_ls_free(void) {
-	SdbList* list = ls_newf ((void*)0x9999);
-	mu_assert_eq((int)(intptr_t)list->free, 0x9999, "ls_newf function gets set properly");
+	SdbList* list = ls_newf (fake_sdb_list_free);
+	mu_assert_eq((int)(intptr_t)list->free, fake_sdb_list_free, "ls_newf function gets set properly");
 	ls_free (list);
 	mu_end;
 }
@@ -229,6 +233,8 @@ static int cmp_order(const void *a, const void *b) {
 }
 
 bool test_r_list_sort6(void) {
+	size_t i;
+
 	int values[] = {
 		4640, 5152, 5664, 6176, 6688, 7200, 7712, 32,
 		544, 1056, 1568, 2080, 2592, 3104, 3616, 4128,
@@ -246,7 +252,6 @@ bool test_r_list_sort6(void) {
 		21120, 23168, 25216, 27264, 29312, 31360, 33408, 35456,
 		37504, 39552,
 	};
-	int i;
 	int a, b;
 	SdbListIter *iter;
 	SdbList* list = ls_new ();
@@ -258,7 +263,7 @@ bool test_r_list_sort6(void) {
 	ls_merge_sort (list, (SdbListComparator)cmp_order);
 
 	a = *(int*)list->head->data;
-	for (iter = list->head->n, i = 0; iter; iter = iter->n, i++) {
+	for (i = 0, iter = list->head->n; iter; iter = iter->n, i++) {
 		b = *(int*)iter->data;
 #if 0 // Debug print
 		printf("Element %d : %d < %d\n", i+1, a, b);
@@ -287,10 +292,9 @@ bool test_r_list_sort4(void) {
 		test4, test8};
 	char* exp_tests_odd[] = {test1, test2, test3, test4, test5, test7,
 		test8, test9, test10};
-	int i;
 
 	// Put in not sorted order.
-	for (i = 0; i < R_ARRAY_SIZE (ins_tests_odd); ++i) {
+	for (size_t i = 0; i < R_ARRAY_SIZE (ins_tests_odd); ++i) {
 		ls_append (list, (void*)ins_tests_odd[i]);
 	}
 	// Sort.
@@ -298,9 +302,9 @@ bool test_r_list_sort4(void) {
 
 	// Check that the list (odd-length) is actually sorted.
 	SdbListIter *next = list->head;
-	for (i = 0; i < R_ARRAY_SIZE (exp_tests_odd); ++i) {
+	for (size_t i = 0; i < R_ARRAY_SIZE (exp_tests_odd); ++i) {
 		char buf[BUF_LENGTH];
-		snprintf(buf, BUF_LENGTH, "%d-th value in sorted list", i);
+		snprintf(buf, BUF_LENGTH, "%ld-th value in sorted list", i);
 		mu_assert_streq ((char*)next->data, exp_tests_odd[i], buf);
 		next = next->n;
 	}
@@ -327,9 +331,9 @@ bool test_r_list_sort4(void) {
 	}
 	// Check that the list (even-length) is actually sorted.
 	next = list->head;
-	for (i = 0; i < R_ARRAY_SIZE (exp_tests_even); ++i) {
+	for (size_t i = 0; i < R_ARRAY_SIZE (exp_tests_even); ++i) {
 		char buf[BUF_LENGTH];
-		snprintf(buf, BUF_LENGTH, "%d-th value in sorted list", i);
+		snprintf(buf, BUF_LENGTH, "%ld-th value in sorted list", i);
 		mu_assert_streq ((char*)next->data, exp_tests_even[i], buf);
 		next = next->n;
 	}
@@ -353,6 +357,6 @@ int all_tests() {
 	return tests_passed != tests_run;
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 	return all_tests();
 }

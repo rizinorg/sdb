@@ -16,17 +16,11 @@ void arradd (int count) {
 	printf (__FILE__" %lf %d\n", p.result, i);
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 	arradd (100);
 	arradd (1000);
 	arradd (10000);
 	arradd (17000);
-#if 0
-	arradd (40000);
-	arradd (100000);
-	// ETOOSLOW //
-	arradd (10000000);
-	arradd (100000000);
-#endif
+
 	return 0;
 }

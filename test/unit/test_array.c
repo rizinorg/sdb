@@ -58,6 +58,6 @@ int all_tests() {
 	return tests_passed != tests_run;
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 	return all_tests ();
 }

@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-typedef int (*BufferOp)(int, const char *, int);
+typedef ssize_t (*BufferOp)(int, const void *, size_t);
 
 typedef struct buffer {
 	char *x;

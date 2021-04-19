@@ -73,7 +73,9 @@ bool test_ht_insert_kvp(void) {
 	mu_end;
 }
 
-ut32 create_collision(const void *key) {
+size_t create_collision(const void *key) {
+	UNUSED(key);
+
 	return 10;
 }
 
@@ -92,7 +94,7 @@ bool test_ht_insert_collision(void) {
 	mu_end;
 }
 
-ut32 key2hash(const void *key) {
+size_t key2hash(const void *key) {
 	return atoi(key);
 }
 
@@ -228,14 +230,18 @@ static void free_key_value(HtPPKv *kv) {
 	free (kv->value);
 }
 
-bool should_not_be_caled(void *user, const char *k, void *v) {
+bool should_not_be_called_HtPP(void *user, const void *k, const void *v) {
+	UNUSED(user);
+	UNUSED(k);
+	UNUSED(v);
+
 	mu_fail ("this function should not be called");
 	return false;
 }
 
 bool test_empty_ht(void) {
 	HtPP *ht = ht_pp_new0 ();
-	ht_pp_foreach (ht, (HtPPForeachCallback) should_not_be_caled, NULL);
+	ht_pp_foreach (ht, (HtPPForeachCallback) should_not_be_called_HtPP, NULL);
 	void *r = ht_pp_find (ht, "key1", NULL);
 	mu_assert_null (r, "key1 should not be present");
 	ht_pp_free (ht);
@@ -295,8 +301,11 @@ bool test_delete(void) {
 }
 
 static bool grow_1_found[3];
-static bool grow_1_foreach(void *user, const char *k, int v) {
-	grow_1_found[v] = true;
+static bool grow_1_foreach(void *user, const void *k, const void *v) {
+	UNUSED(user);
+	UNUSED(k);
+
+	grow_1_found[(uintptr_t)v] = true;
 	return true;
 }
 
@@ -453,6 +462,8 @@ bool test_grow_4(void) {
 }
 
 bool foreach_delete_cb(void *user, const ut64 key, const void *v) {
+	UNUSED(v);
+
 	HtUP *ht = (HtUP *)user;
 
 	ht_up_delete (ht, key);
@@ -461,6 +472,15 @@ bool foreach_delete_cb(void *user, const ut64 key, const void *v) {
 
 static void free_up_value(HtUPKv *kv) {
 	free (kv->value);
+}
+
+bool should_not_be_called_HtUP(void *user, const size_t k, const void *v) {
+	UNUSED(user);
+	UNUSED(k);
+	UNUSED(v);
+
+	mu_fail ("this function should not be called");
+	return false;
 }
 
 bool test_foreach_delete(void) {
@@ -473,7 +493,7 @@ bool test_foreach_delete(void) {
 	ht_up_insert (ht, ht->size * 3, "value4");
 
 	ht_up_foreach (ht, foreach_delete_cb, ht);
-	ht_up_foreach (ht, (HtUPForeachCallback) should_not_be_caled, NULL);
+	ht_up_foreach (ht, (HtUPForeachCallback) should_not_be_called_HtUP, NULL);
 
 	ht_up_free (ht);
 	mu_end;
@@ -556,6 +576,6 @@ int all_tests() {
 	return tests_passed != tests_run;
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 	return all_tests ();
 }

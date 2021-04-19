@@ -2,13 +2,11 @@
 #include <sdb.h>
 #include "minunit.h"
 
-// #define SAVE_FILES
-
 static Sdb *test_sdb_new(const char *file) {
 #ifdef SAVE_FILES
 	Sdb *r = sdb_new (NULL, file, 0);
-	//sdb_disk_create (r);
 #else
+	UNUSED(file);
 	Sdb *r = sdb_new0 ();
 #endif
 	sdb_set (r, "some", "stuff", 0);
@@ -239,11 +237,6 @@ int all_tests() {
 	return tests_passed != tests_run;
 }
 
-int main(int argc, char **argv) {
-	//Sdb *sdb = test_sdb_new();
-	//sdb_query (sdb, "*");
-	//sdb_query (sdb, "***");
-	//test_sdb_free (sdb);
-	//return 0;
+int main(void) {
 	return all_tests();
 }

@@ -61,16 +61,6 @@
 #define USE_MMAN HAVE_MMAN
 #endif
 
-#ifndef UNUSED
-#  define UNUSED
-#  ifdef __GNUC__
-#    if __GNUC__ >= 4
-#      undef UNUSED
-#      define UNUSED __attribute__((__unused__))
-#    endif
-#  endif
-#endif
-
 #ifndef ut8
 #define ut8 unsigned char
 #define ut32 unsigned int
