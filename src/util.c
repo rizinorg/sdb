@@ -28,21 +28,15 @@ SDB_API int gettimeofday (struct timeval* p, struct timezone * tz) {
 		// 100-nanosecond intervals since January 1, 1601 (UTC).
 		GetSystemTimeAsFileTime (&ft);
 		// Fill ULARGE_INTEGER low and high parts.
-		//ul.LowPart = ft.dwLowDateTime;
-		//ul.HighPart = ft.dwHighDateTime;
 		ul |= ft.dwHighDateTime;
 		ul <<= 32;
 		ul |= ft.dwLowDateTime;
 		// Convert to microseconds.
-		//ul.QuadPart /= 10ULL;
 		ul /= 10;
 		// Remove Windows to UNIX Epoch delta.
-		//ul.QuadPart -= 11644473600000000ULL;
 		ul -= 11644473600000000ULL;
 		// Modulo to retrieve the microseconds.
-		//p->tv_usec = (long)(ul.QuadPart % 1000000LL);
 		// Divide to retrieve the seconds.
-		//p->tv_sec = (long)(ul.QuadPart / 1000000LL);
 		p->tv_sec = (long)(ul / 1000000LL);
 		p->tv_usec = (long)(ul % 1000000LL);
 	}
@@ -62,8 +56,8 @@ SDB_API int gettimeofday (struct timeval* p, struct timezone * tz) {
 #endif
 #endif
 
-SDB_API ut32 sdb_hash_len(const char *s, ut32 *len) {
-	ut32 h = CDB_HASHSTART;
+SDB_API size_t sdb_hash_len(const char *s, ut32 *len) {
+	size_t h = CDB_HASHSTART;
 #if FORCE_COLLISION
 	h = 0;
 	while (*s) {
@@ -85,7 +79,7 @@ SDB_API ut32 sdb_hash_len(const char *s, ut32 *len) {
 	return h;
 }
 
-SDB_API ut32 sdb_hash(const char *s) {
+SDB_API size_t sdb_hash(const char *s) {
 	return sdb_hash_len (s, NULL);
 }
 
@@ -103,15 +97,16 @@ SDB_API const char *sdb_itoca(ut64 n) {
 // if s is null, the returned pointer must be freed!!
 SDB_API char *sdb_itoa(ut64 n, char *s, int base) {
 	static const char* lookup = "0123456789abcdef";
-	char tmpbuf[64], *os = NULL;
 	const int imax = 62;
 	int i = imax, copy_string = 1;
-	if (s) {
-		*s = 0;
-		os = NULL;
-	} else {
-		os = s = tmpbuf;
+
+	if (!s) {
+		if (!(s = malloc(sizeof(char) * 64))) {
+			return NULL;
+		}
 	}
+
+	*s = 0;
 	if (base < 0) {
 		copy_string = 0;
 		base = -base;
@@ -120,9 +115,6 @@ SDB_API char *sdb_itoa(ut64 n, char *s, int base) {
 		return NULL;
 	}
 	if (!n) {
-		if (os) {
-			return strdup ("0");
-		}
 		strcpy (s, "0");
 		return s;
 	}
@@ -140,16 +132,13 @@ SDB_API char *sdb_itoa(ut64 n, char *s, int base) {
 		}
 		s[i--] = '0';
 	}
-	if (os) {
-		return strdup (s + i + 1);
-	}
 	if (copy_string) {
 		// unnecessary memmove in case we use the return value
 		// return s + i + 1;
 		memmove (s, s + i + 1, strlen (s + i + 1) + 1);
 		return s;
 	}
-	return s + i + 1;
+	return s;
 }
 
 SDB_API ut64 sdb_atoi(const char *s) {

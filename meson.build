@@ -1,5 +1,5 @@
 project('sdb', 'c', meson_version: '>=0.50.0', default_options: [
-  'buildtype=debugoptimized', 'b_vscrt=from_buildtype'
+  'buildtype=debugoptimized', 'b_vscrt=from_buildtype', 'warning_level=2'
 ])
 py3_exe = import('python').find_installation('python3')
 pkgconfig_mod = import('pkgconfig')

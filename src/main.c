@@ -13,7 +13,9 @@ static int save = 0;
 static Sdb *s = NULL;
 static ut32 options = SDB_OPTION_FS | SDB_OPTION_NOSTAMP;
 
-static void terminate(int sig UNUSED) {
+static void terminate(int sig) {
+	UNUSED(sig);
+
 	if (!s) {
 		return;
 	}
@@ -154,7 +156,9 @@ static char *slurp(FILE *f, size_t *sz) {
 }
 
 #if USE_MMAN
-static void synchronize(int sig UNUSED) {
+static void synchronize(int sig) {
+	UNUSED(sig);
+
 	// TODO: must be in sdb_sync() or wat?
 	sdb_sync (s);
 	Sdb *n = sdb_new (s->path, s->name, s->lock);
@@ -322,6 +326,8 @@ static int base64decode(void) {
 }
 
 static void dbdiff_cb(const SdbDiff *diff, void *user) {
+	UNUSED(user);
+
 	char sbuf[512];
 	int r = sdb_diff_format (sbuf, sizeof(sbuf), diff);
 	if (r < 0) {

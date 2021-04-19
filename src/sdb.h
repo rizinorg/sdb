@@ -1,6 +1,8 @@
 #ifndef SDB_H
 #define SDB_H
 
+#define UNUSED(x) (void)(x)
+
 #if !defined(O_BINARY) && !defined(_MSC_VER)
 #undef O_BINARY
 #define O_BINARY 0
@@ -183,8 +185,8 @@ SDB_API const char *sdb_const_get(Sdb*, const char *key, ut32 *cas);
 // Gets a const pointer to the value associated with `key` and returns in
 // `vlen` the length of the value string.
 SDB_API const char *sdb_const_get_len(Sdb* s, const char *key, int *vlen, ut32 *cas);
-SDB_API int sdb_set(Sdb*, const char *key, const char *data, ut32 cas);
-SDB_API int sdb_set_owned(Sdb* s, const char *key, char *val, ut32 cas);
+SDB_API ut32 sdb_set(Sdb*, const char *key, const char *data, ut32 cas);
+SDB_API ut32 sdb_set_owned(Sdb* s, const char *key, char *val, ut32 cas);
 SDB_API int sdb_concat(Sdb *s, const char *key, const char *value, ut32 cas);
 SDB_API int sdb_uncat(Sdb *s, const char *key, const char *value, ut32 cas);
 SDB_API int sdb_add(Sdb* s, const char *key, const char *val, ut32 cas);
@@ -241,15 +243,15 @@ SDB_API bool sdb_lock(const char *s);
 SDB_API const char *sdb_lock_file(const char *f);
 SDB_API void sdb_unlock(const char *s);
 SDB_API bool sdb_unlink(Sdb* s);
-SDB_API int sdb_lock_wait(const char *s UNUSED);
+SDB_API int sdb_lock_wait(const char *s);
 
 /* expiration */
 SDB_API bool sdb_expire_set(Sdb* s, const char *key, ut64 expire, ut32 cas);
 SDB_API ut64 sdb_expire_get(Sdb* s, const char *key, ut32 *cas);
 SDB_API ut64 sdb_now(void);
 SDB_API ut64 sdb_unow(void);
-SDB_API ut32 sdb_hash(const char *key);
-SDB_API ut32 sdb_hash_len(const char *key, ut32 *len);
+SDB_API size_t sdb_hash(const char *key);
+SDB_API size_t sdb_hash_len(const char *key, ut32 *len);
 SDB_API ut8 sdb_hash_byte(const char *s);
 
 // namespace

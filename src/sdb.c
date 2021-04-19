@@ -307,13 +307,15 @@ SDB_API int sdb_unset(Sdb* s, const char *key, ut32 cas) {
 
 /* remove from memory */
 SDB_API bool sdb_remove(Sdb *s, const char *key, ut32 cas) {
+	UNUSED(cas);
+
 	return sdb_ht_delete (s->ht, key);
 }
 
 // alias for '-key=str'.. '+key=str' concats
 SDB_API int sdb_uncat(Sdb *s, const char *key, const char *value, ut32 cas) {
-	// remove 'value' from current key value.
-	// TODO: cas is ignored here
+	UNUSED(cas);
+
 	int vlen = 0, valen;
 	char *p, *v = sdb_get_len (s, key, &vlen, NULL);
 	int mod = 0;
@@ -627,11 +629,11 @@ static ut32 sdb_set_internal(Sdb* s, const char *key, char *val, int owned, ut32
 	return 0;
 }
 
-SDB_API int sdb_set_owned(Sdb* s, const char *key, char *val, ut32 cas) {
+SDB_API ut32 sdb_set_owned(Sdb* s, const char *key, char *val, ut32 cas) {
 	return sdb_set_internal (s, key, val, 1, cas);
 }
 
-SDB_API int sdb_set(Sdb* s, const char *key, const char *val, ut32 cas) {
+SDB_API ut32 sdb_set(Sdb* s, const char *key, const char *val, ut32 cas) {
 	return sdb_set_internal (s, key, (char*)val, 0, cas);
 }
 
@@ -815,6 +817,8 @@ static bool _insert_into_disk(void *user, const char *key, const char *value) {
 }
 
 static bool _remove_afer_insert(void *user, const char *k, const char *v) {
+	UNUSED(v);
+
 	Sdb *s = (Sdb *)user;
 	if (s) {
 		sdb_ht_delete (s->ht, k);
@@ -1135,6 +1139,8 @@ typedef struct {
 } UnsetCallbackData;
 
 static bool unset_cb(void *user, const char *k, const char *v) {
+	UNUSED(v);
+
 	UnsetCallbackData *ucd = user;
 	if (sdb_match (k, ucd->key)) {
 		sdb_unset (ucd->sdb, k, 0);

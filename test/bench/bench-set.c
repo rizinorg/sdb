@@ -16,15 +16,12 @@ void dosync (int count) {
 	printf (__FILE__" %lf %d\n", p.result, i);
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 	dosync (100);
 	dosync (1000);
 	dosync (10000);
 	dosync (100000);
 	dosync (1000000);
-#if 0
-	dosync (10000000);
-	dosync (100000000);
-#endif
+
 	return 0;
 }

@@ -1,8 +1,8 @@
 #include <sdb.h>
 
-int main(int argc, char **argv) {
-	int r, rc = 0;
-	ut32 cas;
+int main(void) {
+	int rc = 0;
+	ut32 cas, r;
 
 	Sdb *s = sdb_new (NULL, NULL, 0);
 	r = sdb_set (s, "hello", "world", 1);

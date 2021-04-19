@@ -5,10 +5,9 @@
 
 #include <sdb.h>
 
-int main(int argc, char **argv) {
-	int key_num = 100;
+int main(void) {
+	size_t key_num = 100;
 	char *key, *value;
-	size_t i;
 	Sdb *s;
 
 	key = malloc (sizeof(char*) * SDB_KSZ);
@@ -22,7 +21,7 @@ int main(int argc, char **argv) {
 
 	srand (time (NULL));
 
-	for (i = 0; i < SDB_KSZ - 1; i++) {
+	for (size_t i = 0; i < SDB_KSZ - 1; i++) {
 		key[i] = 'A' + rand () % 26;
 		value[i] = 'a' + rand () % 26;
 	}
@@ -30,7 +29,7 @@ int main(int argc, char **argv) {
 	key[SDB_KSZ - 2] = '\0';
 	value[SDB_KSZ - 2] = '\0';
 
-	for (i = 0; i < key_num; i++) {
+	for (size_t i = 0; i < key_num; i++) {
 		key[rand () % 250] = 'a' + i % 26;
 		sdb_add (s, key, value, 0);
 	}

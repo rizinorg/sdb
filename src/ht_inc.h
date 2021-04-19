@@ -60,9 +60,9 @@ typedef struct Ht_(kv) {
 typedef void (*HT_(KvFreeFunc))(HT_(Kv) *);
 typedef KEY_TYPE (*HT_(DupKey))(const KEY_TYPE);
 typedef VALUE_TYPE (*HT_(DupValue))(const VALUE_TYPE);
-typedef ut32 (*HT_(CalcSizeK))(const KEY_TYPE);
-typedef ut32 (*HT_(CalcSizeV))(const VALUE_TYPE);
-typedef ut32 (*HT_(HashFunction))(const KEY_TYPE);
+typedef size_t (*HT_(CalcSizeK))(const KEY_TYPE);
+typedef size_t (*HT_(CalcSizeV))(const VALUE_TYPE);
+typedef size_t (*HT_(HashFunction))(const KEY_TYPE);
 typedef int (*HT_(ListComparator))(const KEY_TYPE, const KEY_TYPE);
 typedef bool (*HT_(ForeachCallback))(void *user, const KEY_TYPE, const VALUE_TYPE);
 

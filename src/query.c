@@ -214,7 +214,7 @@ repeat:
 		if (next) {
 			*next = 0;
 		}
-		out_concat (sdb_fmt ("0x%08x\n", sdb_hash (p)));
+		out_concat (sdb_fmt ("0x%08zx\n", sdb_hash (p)));
 		if (next) {
 			*next = ';';
 		}
