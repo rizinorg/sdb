@@ -1025,10 +1025,12 @@ SDB_API ut64 sdb_expire_get(Sdb* s, const char *key, ut32 *cas) {
 
 SDB_API bool sdb_hook(Sdb* s, SdbHook cb, void* user) {
 	int i = 0;
+	void *tmp;
 	SdbHook hook;
 	SdbListIter *iter;
 	if (s->hooks) {
-		ls_foreach (s->hooks, iter, hook) {
+		ls_foreach (s->hooks, iter, tmp) {
+			hook = (SdbHook)tmp;
 			if (!(i % 2) && (hook == cb)) {
 				return false;
 			}

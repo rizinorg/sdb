@@ -55,10 +55,14 @@ bool test_ls_join(void) {
 	mu_end;
 }
 
+void fake_sdb_list_free(void *ptr) {
+	UNUSED(ptr);
+	return;
+}
 
 bool test_ls_free(void) {
-	SdbList* list = ls_newf ((void*)0x9999);
-	mu_assert_eq((int)(intptr_t)list->free, 0x9999, "ls_newf function gets set properly");
+	SdbList* list = ls_newf (fake_sdb_list_free);
+	mu_assert_eq((int)(intptr_t)list->free, fake_sdb_list_free, "ls_newf function gets set properly");
 	ls_free (list);
 	mu_end;
 }
