@@ -103,26 +103,28 @@ SDB_API const char *sdb_itoca(ut64 n) {
 // if s is null, the returned pointer must be freed!!
 SDB_API char *sdb_itoa(ut64 n, char *s, int base) {
 	static const char* lookup = "0123456789abcdef";
-	char tmpbuf[64], *os = NULL;
 	const int imax = 62;
-	int i = imax, copy_string = 1;
+	int i = imax, copy_string = 1, alloc = 0;
 	if (s) {
 		*s = 0;
-		os = NULL;
 	} else {
-		os = s = tmpbuf;
+		alloc = 1;
+		s = malloc(64);
+		if (!s) {
+			return NULL;
+		}
 	}
 	if (base < 0) {
 		copy_string = 0;
 		base = -base;
 	}
 	if ((base > 16) || (base < 1)) {
+		if (alloc) {
+			free (s);
+		}
 		return NULL;
 	}
 	if (!n) {
-		if (os) {
-			return strdup ("0");
-		}
 		strcpy (s, "0");
 		return s;
 	}
@@ -140,10 +142,7 @@ SDB_API char *sdb_itoa(ut64 n, char *s, int base) {
 		}
 		s[i--] = '0';
 	}
-	if (os) {
-		return strdup (s + i + 1);
-	}
-	if (copy_string) {
+	if (copy_string || alloc) {
 		// unnecessary memmove in case we use the return value
 		// return s + i + 1;
 		memmove (s, s + i + 1, strlen (s + i + 1) + 1);
