@@ -104,6 +104,8 @@ SDB_API bool Ht_(update)(HtName_(Ht)* ht, const KEY_TYPE key, VALUE_TYPE value);
 SDB_API bool Ht_(update_key)(HtName_(Ht)* ht, const KEY_TYPE old_key, const KEY_TYPE new_key);
 // Delete a key from the hashtable.
 SDB_API bool Ht_(delete)(HtName_(Ht)* ht, const KEY_TYPE key);
+// Delete a key from the hashtable without freeing the value.
+SDB_API bool Ht_(delete_ref)(HtName_(Ht)* ht, const KEY_TYPE key);
 // Find the value corresponding to the matching key.
 SDB_API VALUE_TYPE Ht_(find)(HtName_(Ht)* ht, const KEY_TYPE key, bool* found);
 // Iterates over all elements in the hashtable, calling the cb function on each Kv.

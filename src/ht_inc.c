@@ -350,6 +350,26 @@ SDB_API bool Ht_(delete)(HtName_(Ht)* ht, const KEY_TYPE key) {
 	return false;
 }
 
+// Deletes a entry from the hash table from the key, if the pair exists,
+// without triggering the corresponding free() function
+SDB_API bool Ht_(delete_ref)(HtName_(Ht)* ht, const KEY_TYPE key) {
+	HT_(Bucket) *bt = &ht->table[bucketfn (ht, key)];
+	ut32 key_len = calcsize_key (ht, key);
+	HT_(Kv) *kv;
+	ut32 j;
+
+	BUCKET_FOREACH (ht, bt, j, kv) {
+		if (is_kv_equal (ht, key, key_len, kv)) {
+			void *src = next_kv (ht, kv);
+			memmove (kv, src, (bt->count - j - 1) * ht->opt.elem_size);
+			bt->count--;
+			ht->count--;
+			return true;
+		}
+	}
+	return false;
+}
+
 SDB_API void Ht_(foreach)(HtName_(Ht) *ht, HT_(ForeachCallback) cb, void *user) {
 	ut32 i;
 
