@@ -169,7 +169,7 @@ static void synchronize(int sig UNUSED) {
 
 static int sdb_grep_dump(const char *dbname, int fmt, bool grep,
                          const char *expgrep) {
-	char *v, k[SDB_MAX_KEY] = { 0 };
+	char *v, k[SDB_CDB_MAX_KEY] = { 0 };
 	const char *comma = "";
 	// local db beacuse is readonly and we dont need to finalize in case of ^C
 	Sdb *db = sdb_new (NULL, dbname, 0);

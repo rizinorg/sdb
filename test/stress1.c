@@ -11,8 +11,8 @@ int main(int argc, char **argv) {
 	size_t i;
 	Sdb *s;
 
-	key = malloc (sizeof(char*) * SDB_KSZ);
-	value = malloc (sizeof(char*) * SDB_KSZ);
+	key = malloc (sizeof(char*) * SDB_CDB_MAX_KEY);
+	value = malloc (sizeof(char*) * SDB_CDB_MAX_KEY);
 	s = sdb_new ("./", "f", 0);
 
 	if (!key || !value || !s) {
@@ -22,13 +22,13 @@ int main(int argc, char **argv) {
 
 	srand (time (NULL));
 
-	for (i = 0; i < SDB_KSZ - 1; i++) {
+	for (i = 0; i < SDB_CDB_MAX_KEY - 1; i++) {
 		key[i] = 'A' + rand () % 26;
 		value[i] = 'a' + rand () % 26;
 	}
 
-	key[SDB_KSZ - 2] = '\0';
-	value[SDB_KSZ - 2] = '\0';
+	key[SDB_CDB_MAX_KEY - 2] = '\0';
+	value[SDB_CDB_MAX_KEY - 2] = '\0';
 
 	for (i = 0; i < key_num; i++) {
 		key[rand () % 250] = 'a' + i % 26;

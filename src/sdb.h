@@ -18,10 +18,10 @@ extern "C" {
 #include "sdb_version.h"
 
 /* Key value sizes */
-#define SDB_MIN_VALUE 1
-#define SDB_MAX_VALUE 0xffffff
-#define SDB_MIN_KEY 1
-#define SDB_MAX_KEY 0xff
+#define SDB_CDB_MIN_VALUE 1
+#define SDB_CDB_MAX_VALUE CDB_MAX_VALUE
+#define SDB_CDB_MIN_KEY 1
+#define SDB_CDB_MAX_KEY CDB_MAX_KEY
 
 #if !defined(SZT_ADD_OVFCHK)
 #define SZT_ADD_OVFCHK(x, y) ((SIZE_MAX - (x)) <= (y))
@@ -76,11 +76,6 @@ extern char *strdup (const char *);
 #define SDB_LIST_UNSORTED 0
 #define SDB_LIST_SORTED 1
 
-// This size implies trailing zero terminator, this is 254 chars + 0
-#define SDB_KSZ SDB_MAX_KEY
-#define SDB_VSZ SDB_MAX_VALUE
-
-
 typedef struct sdb_t {
 	char *dir; // path+name
 	char *path;
@@ -102,7 +97,6 @@ typedef struct sdb_t {
 	int ns_lock; // TODO: merge into options?
 	SdbList *ns;
 	SdbList *hooks;
-	SdbKv tmpkv;
 	ut32 depth;
 	bool timestamped;
 } Sdb;
