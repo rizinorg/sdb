@@ -206,8 +206,6 @@ static void sdb_fini(Sdb* s, int donull) {
 	}
 	free (s->ndump);
 	free (s->dir);
-	free (sdbkv_value (&s->tmpkv));
-	s->tmpkv.base.value_len = 0;
 	if (donull) {
 		memset (s, 0, sizeof (Sdb));
 	}
@@ -276,7 +274,7 @@ SDB_API const char *sdb_const_get_len(Sdb* s, const char *key, int *vlen, ut32 *
 		return NULL;
 	}
 	len = cdb_datalen (&s->db);
-	if (len < SDB_MIN_VALUE || len >= SDB_MAX_VALUE) {
+	if (len < SDB_CDB_MIN_VALUE || len >= SDB_CDB_MAX_VALUE) {
 		return NULL;
 	}
 	if (vlen) {
@@ -502,15 +500,8 @@ SDB_API SdbKv* sdbkv_new(const char *k, const char *v) {
 
 SDB_API SdbKv* sdbkv_new2(const char *k, int kl, const char *v, int vl) {
 	SdbKv *kv;
-	if (v) {
-		if (vl >= SDB_VSZ) {
-			return NULL;
-		}
-	} else {
+	if (!v) {
 		vl = 0;
-	}
-	if (kl >= SDB_KSZ) {
-		return NULL;
 	}
 	kv = R_NEW0 (SdbKv);
 	kv->base.key_len = kl;
@@ -563,12 +554,6 @@ static ut32 sdb_set_internal(Sdb* s, const char *key, char *val, int owned, ut32
 	// XXX strlen computed twice.. because of check_*()
 	klen = strlen (key);
 	vlen = strlen (val);
-	if (klen >= SDB_KSZ || vlen >= SDB_VSZ) {
-		if (owned) {
-			free (val);
-		}
-		return 0;
-	}
 	if (s->journal != -1) {
 		sdb_journal_log (s, key, val);
 	}
@@ -752,7 +737,7 @@ static bool sdb_foreach_end(Sdb *s, bool result) {
 
 static bool sdb_foreach_cdb(Sdb *s, SdbForeachCallback cb, SdbForeachCallback cb2, void *user) {
 	char *v = NULL;
-	char k[SDB_MAX_KEY] = {0};
+	char k[SDB_CDB_MAX_KEY] = {0};
 	bool found;
 	sdb_dump_begin (s);
 	while (sdb_dump_dupnext (s, k, &v, NULL)) {
@@ -864,22 +849,6 @@ SDB_API void sdb_dump_begin(Sdb* s) {
 	}
 }
 
-SDB_API SdbKv *sdb_dump_next(Sdb* s) {
-	char *v = NULL;
-	char k[SDB_MAX_KEY] = {0};
-	int vl = 0;
-	// we dont need to malloc, because all values are null terminated in memory.
-	if (!sdb_dump_dupnext (s, k, &v, &vl)) {
-		return NULL;
-	}
-	vl--;
-	strncpy (sdbkv_key (&s->tmpkv), k, SDB_KSZ);
-	free (sdbkv_value (&s->tmpkv));
-	s->tmpkv.base.value = v;
-	s->tmpkv.base.value_len = vl;
-	return &s->tmpkv;
-}
-
 SDB_API bool sdb_dump_hasnext(Sdb* s) {
 	ut32 k, v;
 	if (!cdb_getkvlen (&s->db, &k, &v, s->pos)) {
@@ -933,7 +902,7 @@ SDB_API bool sdb_dump_dupnext(Sdb* s, char *key, char **value, int *_vlen) {
 	}
 	if (key) {
 		key[0] = 0;
-		if (klen > SDB_MIN_KEY && klen < SDB_MAX_KEY) {
+		if (klen > SDB_CDB_MIN_KEY && klen < SDB_CDB_MAX_KEY) {
 			if (getbytes (s, key, klen) == -1) {
 				return 0;
 			}
@@ -942,7 +911,7 @@ SDB_API bool sdb_dump_dupnext(Sdb* s, char *key, char **value, int *_vlen) {
 	}
 	if (value) {
 		*value = 0;
-		if (vlen < SDB_MAX_VALUE) {
+		if (vlen < SDB_CDB_MAX_VALUE) {
 			*value = malloc (vlen + 10);
 			if (!*value) {
 				return false;
