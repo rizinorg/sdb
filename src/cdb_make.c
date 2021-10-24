@@ -6,10 +6,15 @@
 #include "cdb.h"
 #include "cdb_make.h"
 
+#if __APPLE__
+// for MAC_OS_X_VERSION_10_6
+#include <AvailabilityMacros.h>
+#endif
+
 #define ALIGNMENT sizeof (void*)
 
 char *cdb_alloc(ut32 n) {
-#if __APPLE__ && !__POWERPC__
+#if __APPLE__ && defined(MAC_OS_X_VERSION_10_6)
 	void *ret = NULL;
 	return posix_memalign (&ret, ALIGNMENT, n)? NULL: ret;
 #elif __SDB_WINDOWS__ && !__CYGWIN__
