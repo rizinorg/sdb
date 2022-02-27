@@ -9,8 +9,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#ifndef HAVE_EPRINTF
 #undef eprintf
 #define eprintf(...) fprintf(stderr,__VA_ARGS__)
+#define HAVE_EPRINTF 1
+#endif
 
 // Copied from https://gcc.gnu.org/wiki/Visibility
 #ifndef SDB_API
@@ -39,7 +42,6 @@
 #if __WIN32__ || __MINGW__ || __WINDOWS__ || _MSC_VER
 #define __SDB_WINDOWS__ 1
 #define DIRSEP '\\'
-#include <windows.h>
 #include <io.h>
 #else
 // CYGWIN AND UNIX
