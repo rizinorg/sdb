@@ -35,7 +35,6 @@ extern "C" {
 #endif
 
 #if __SDB_WINDOWS__ && !__CYGWIN__
-#include <windows.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <sys/types.h>
@@ -48,7 +47,6 @@ extern __attribute__((dllimport)) void __cdecl _aligned_free(void *memblock);
 extern char *strdup (const char *);
 #else
 #include <process.h>
-#include <windows.h>
 #include <malloc.h> // for _aligned_malloc
 #endif
 

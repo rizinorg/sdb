@@ -9,7 +9,7 @@
 #include "sdb.h"
 
 #if __SDB_WINDOWS__
-
+#include <windows.h>
 #if UNICODE
 
 static wchar_t *r_utf8_to_utf16_l (const char *cstring, int len) {

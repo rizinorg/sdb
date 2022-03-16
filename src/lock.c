@@ -5,6 +5,9 @@
 #include <fcntl.h>
 #include "sdb.h"
 #include "sdb_userconf.h"
+#if __SDB_WINDOWS__
+#include <windows.h>
+#endif
 
 SDB_API const char *sdb_lock_file(const char *f) {
 	static char buf[128];
