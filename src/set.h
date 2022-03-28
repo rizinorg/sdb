@@ -4,6 +4,10 @@
 #include "ht_pp.h"
 #include "ht_up.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef HtPP SetP;
 
 SDB_API SetP *set_p_new(void);
@@ -19,5 +23,9 @@ SDB_API void set_u_add(SetU *p, ut64 u);
 SDB_API bool set_u_contains(SetU *s, ut64 u);
 SDB_API void set_u_delete(SetU *s, ut64 u);
 SDB_API void set_u_free(SetU *p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

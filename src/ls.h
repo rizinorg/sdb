@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef void (*SdbListFree)(void *ptr);
 typedef int (*SdbListComparator)(const void *a, const void *b);
 
@@ -71,5 +75,9 @@ SDB_API int ls_join(SdbList *first, SdbList *second);
 SDB_API int ls_del_n(SdbList *list, int n);
 SDB_API SdbListIter *ls_insert(SdbList *list, int n, void *data);
 SDB_API void *ls_pop_head(SdbList *list);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

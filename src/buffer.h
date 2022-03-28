@@ -3,6 +3,10 @@
 
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef int (*BufferOp)(int, const char *, int);
 
 typedef struct buffer {
@@ -53,5 +57,9 @@ extern buffer *buffer_0small;
 extern buffer *buffer_1;
 extern buffer *buffer_1small;
 extern buffer *buffer_2;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
