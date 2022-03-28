@@ -6,6 +6,10 @@
 #include <string.h>
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define KVLSZ 4
 #define CDB_MAX_KEY 0xff
 #define CDB_MAX_VALUE 0xffffff
@@ -35,5 +39,9 @@ int cdb_findnext(struct cdb *, ut32 u, const char *, ut32);
 
 #define cdb_datapos(c) ((c)->dpos)
 #define cdb_datalen(c) ((c)->dlen)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

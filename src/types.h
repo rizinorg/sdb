@@ -9,6 +9,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef HAVE_EPRINTF
 #undef eprintf
 #define eprintf(...) fprintf(stderr,__VA_ARGS__)
@@ -144,5 +148,9 @@ static inline void ut32_unpack(char s[4], ut32 *u) {
 	result += (ut8) s[0];
 	*u = result;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #include "buffer.h"
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define CDB_HPLIST 1000
 
 struct cdb_hp { ut32 h; ut32 p; } ;
@@ -36,5 +40,9 @@ extern int cdb_make_addbegin(struct cdb_make *,unsigned int,unsigned int);
 extern int cdb_make_addend(struct cdb_make *,unsigned int,unsigned int,ut32);
 extern int cdb_make_add(struct cdb_make *,const char *,unsigned int,const char *,unsigned int);
 extern int cdb_make_finish(struct cdb_make *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
