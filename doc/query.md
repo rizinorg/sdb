@@ -16,7 +16,7 @@ Set the new value to 'foo':
 
     foo=bar
 
-NOTE: that strings are not quoted, numbers, arrays, json, and other values are also defined like this, no quotes or numeric sign needed.
+NOTE: that strings are not quoted, numbers, arrays, and other values are also defined like this, no quotes or numeric sign needed.
 
 Set a number to 'foo':
 

@@ -13,12 +13,6 @@ libsdb_sources = files(
   'ht_up.c',
   'ht_pu.c',
   'journal.c',
-  'json.c',
-  #'json/api.c',
-  #'json/indent.c',
-  #'json/js0n.c',
-  #'json/path.c',
-  #'json/rangstr.c',
   'lock.c',
   'ls.c',
   'match.c',
@@ -47,7 +41,7 @@ sdb_dep = declare_dependency(
 )
 
 sdb_whole_dep = declare_dependency(
-  link_whole: libsdb,
+  link_whole: [libsdb],
   include_directories: libsdb_inc,
 )
 

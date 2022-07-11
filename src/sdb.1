@@ -3,7 +3,7 @@
 .Os
 .Sh NAME
 .Nm sdb
-.Nd simple key-value database baked by base64, json and arrays
+.Nd simple key-value database baked by base64 and arrays
 .Sh SYNOPSIS
 .Nm sdb
 .Op Fl 0dehjJv
@@ -21,8 +21,6 @@ Find differences between two databases
 Encode stdin in base64 and prints to stdout
 .It Fl h
 Show help message
-.It Fl j
-Indent JSON from stdin if no more arguments, otherwise dump database as JSON.
 .It Fl J
 Enable journaling
 .It Fl h
@@ -48,10 +46,6 @@ Append those quoted commands to 'sdb -' to test these sdb_query expressions:
 a=hello b=world a b    # hello world
 .Pp
 a=1 +a -a              # 2 1     ; key inc/dec
-.Pp
-a={"a":122} a:a=O a    # {"a":0} ; json set
-.Pp
-a={"foo":122} +a:foo   # 123     ; json increment
 .Pp
 []a=1,2,3,4,5 [?]a     # 5       ; count array
 .Pp
